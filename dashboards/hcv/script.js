@@ -7,18 +7,18 @@ const METRICS = {
     label: 'Effective Under Lease',
     shortLabel: 'Eff. Leased',
     format: v => (v * 100).toFixed(1) + '%',
-    stops: [0.7, '#f7fbff', 0.9, '#4292c6', 1.05, '#084594'],
+    stops: [0.7, '#c6dbef', 0.9, '#2171b5', 1.05, '#08306b'],
     legendStops: [0.7, 0.9, 1.05],
-    gradient: 'linear-gradient(to right, #f7fbff, #4292c6, #084594)',
+    gradient: 'linear-gradient(to right, #c6dbef, #2171b5, #08306b)',
     description: 'Vouchers effectively under lease / Total vouchers'
   },
   utilization_rate: {
     label: 'Utilization Rate',
     shortLabel: 'Utilization',
     format: v => (v * 100).toFixed(1) + '%',
-    stops: [0.7, '#f7fbff', 0.9, '#4292c6', 1.05, '#084594'],
+    stops: [0.7, '#cbc9e2', 0.9, '#756bb1', 1.05, '#3f007d'],
     legendStops: [0.7, 0.9, 1.05],
-    gradient: 'linear-gradient(to right, #f7fbff, #4292c6, #084594)',
+    gradient: 'linear-gradient(to right, #cbc9e2, #756bb1, #3f007d)',
     description: 'Vouchers under lease / Total vouchers'
   },
   success_rate: {
@@ -43,11 +43,27 @@ const METRICS = {
     label: 'Port-In Rate',
     shortLabel: 'Port-In',
     format: v => (v * 100).toFixed(1) + '%',
-    stops: [0, '#f2f0f7', 0.15, '#9e9ac8', 0.5, '#3f007d'],
+    stops: [0, '#b2e2e2', 0.15, '#2ca25f', 0.5, '#006d2c'],
     legendStops: [0, 0.15, 0.5],
-    gradient: 'linear-gradient(to right, #f2f0f7, #9e9ac8, #3f007d)',
+    gradient: 'linear-gradient(to right, #b2e2e2, #2ca25f, #006d2c)',
     description: 'Portable vouchers / Vouchers under lease'
   }
+};
+
+// ── State abbreviation → name lookup ──
+const STATE_NAMES = {
+  AL:'Alabama', AK:'Alaska', AZ:'Arizona', AR:'Arkansas', CA:'California',
+  CO:'Colorado', CT:'Connecticut', DE:'Delaware', FL:'Florida', GA:'Georgia',
+  HI:'Hawaii', ID:'Idaho', IL:'Illinois', IN:'Indiana', IA:'Iowa',
+  KS:'Kansas', KY:'Kentucky', LA:'Louisiana', ME:'Maine', MD:'Maryland',
+  MA:'Massachusetts', MI:'Michigan', MN:'Minnesota', MS:'Mississippi',
+  MO:'Missouri', MT:'Montana', NE:'Nebraska', NV:'Nevada', NH:'New Hampshire',
+  NJ:'New Jersey', NM:'New Mexico', NY:'New York', NC:'North Carolina',
+  ND:'North Dakota', OH:'Ohio', OK:'Oklahoma', OR:'Oregon', PA:'Pennsylvania',
+  RI:'Rhode Island', SC:'South Carolina', SD:'South Dakota', TN:'Tennessee',
+  TX:'Texas', UT:'Utah', VT:'Vermont', VA:'Virginia', WA:'Washington',
+  WV:'West Virginia', WI:'Wisconsin', WY:'Wyoming', DC:'Washington D.C.',
+  PR:'Puerto Rico', VI:'Virgin Islands', GU:'Guam'
 };
 
 // ── App state ──
@@ -170,6 +186,30 @@ document.getElementById('metric-select').addEventListener('change', e => {
   }
 });
 
+// ── Hover tooltip popup ──
+const hoverPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  className: 'pha-hover-popup',
+  maxWidth: '260px',
+  offset: 12
+});
+
+function buildPopupHTML(props) {
+  const name = props.pha_name || props.AGENCY_NAME || props.NAME || 'Unknown PHA';
+  const code = String(props.PARTICIPAN || props.pha_code || props.PHA_CODE || '').trim().toUpperCase();
+  const stateAb = code.slice(0, 2).toUpperCase();
+  const stateName = STATE_NAMES[stateAb] || stateAb;
+  const totalVouchers = (props.total_vouchers !== null && props.total_vouchers !== undefined)
+    ? Number(props.total_vouchers).toLocaleString()
+    : 'N/A';
+  return `
+    <div class="pha-popup-name">${name}</div>
+    <div class="pha-popup-row"><span class="pha-popup-label">State</span><span class="pha-popup-val">${stateName}</span></div>
+    <div class="pha-popup-row"><span class="pha-popup-label">Total Vouchers</span><span class="pha-popup-val">${totalVouchers}</span></div>
+  `;
+}
+
 // ── Interactions ──
 let hoveredId = null;
 
@@ -188,6 +228,12 @@ function setupInteractions() {
     hoveredId = feat.id;
     map.setFeatureState({ source: 'pha', id: hoveredId }, { hovered: true });
 
+    // Show hover tooltip
+    hoverPopup
+      .setLngLat(e.lngLat)
+      .setHTML(buildPopupHTML(feat.properties))
+      .addTo(map);
+
     // Only update sidebar if no PHA is locked
     if (!lockedPhaCode) {
       updateSidebar(feat, false);
@@ -200,6 +246,7 @@ function setupInteractions() {
       map.setFeatureState({ source: 'pha', id: hoveredId }, { hovered: false });
       hoveredId = null;
     }
+    hoverPopup.remove();
     if (!lockedPhaCode) {
       showDefaultPanel();
     }

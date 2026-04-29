@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Voucher Gap Analysis</title>
+  <title>Voucher Gap Analysis 2022</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
   <link rel="stylesheet" href="gap.css" />
@@ -11,7 +11,7 @@
 
   <header id="header">
     <div id="header-left">
-      <h1>Voucher Gap Analysis</h1>
+      <h1>Voucher Gap Analysis 2022</h1>
       <p>Eligible Renters ÷ Vouchers Under Lease · HUD PSH &amp; CHAS · 2022</p>
     </div>
     <div id="header-right"></div>
@@ -64,10 +64,10 @@
           <div class="gap-ctrl-label">WEIGHTED BY SHARE OF</div>
           <div class="tog-group" id="var-toggle">
             <button class="tog-btn" data-var="renters">Renters</button>
-            <button class="tog-btn" data-var="children">Children HH</button>
-            <button class="tog-btn" data-var="elderly">Elderly HH</button>
-            <button class="tog-btn" data-var="poc">HH of Color</button>
-            <button class="tog-btn" data-var="poverty">Poverty HH</button>
+            <button class="tog-btn" data-var="children">Children Households</button>
+            <button class="tog-btn" data-var="elderly">Elderly Households</button>
+            <button class="tog-btn" data-var="poc">Households of Color</button>
+            <button class="tog-btn" data-var="poverty">Poverty Households</button>
           </div>
         </div>
 
@@ -78,6 +78,11 @@
             <button class="tog-btn" data-val="county">County</button>
             <button class="tog-btn" data-val="tract">Tract</button>
           </div>
+        </div>
+
+        <div class="gap-ctrl-group">
+          <div class="gap-ctrl-label">OVERLAY</div>
+          <button id="pha-overlay-btn" class="tog-btn overlay-btn">PHA Boundaries</button>
         </div>
 
         <!-- Tract state selector (shown only in tract mode) -->
@@ -170,6 +175,60 @@
       cursor: pointer; letter-spacing: 0.03em; transition: background 0.15s;
     }
     #htu-dismiss:hover { background: #2d5491; }
+
+    /* ── Gap hover popup ── */
+    .gap-hover-popup .mapboxgl-popup-content {
+      background: #ffffff;
+      border: 1px solid #d0d5e8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      pointer-events: none;
+    }
+    .gap-hover-popup .mapboxgl-popup-tip { display: none; }
+    .gap-popup-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1a1d2e;
+      margin-bottom: 7px;
+      line-height: 1.3;
+    }
+    .gap-popup-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11.5px;
+      margin-top: 3px;
+    }
+    .gap-popup-label { color: #7a86a8; }
+    .gap-popup-val { font-weight: 600; color: #1a1d2e; }
+    .gap-popup-divider {
+      border-top: 1px solid #e5e7eb;
+      margin: 8px 0 6px;
+    }
+    .gap-popup-pha-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #7a86a8;
+      margin-bottom: 4px;
+    }
+    .gap-popup-pha-list { display: flex; flex-direction: column; gap: 2px; }
+    .gap-popup-pha-item {
+      font-size: 11px;
+      color: #1a1d2e;
+      padding: 1px 0;
+      border-left: 2px solid #1d4ed8;
+      padding-left: 6px;
+    }
+    .gap-popup-more {
+      font-size: 10.5px;
+      color: #7a86a8;
+      font-style: italic;
+      margin-top: 2px;
+    }
   </style>
 
   <div id="htu-overlay">
@@ -177,7 +236,7 @@
       <div id="htu-header">
         <div>
           <span id="htu-tag">Module 01</span>
-          <h2 id="htu-title">Voucher Gap Analysis</h2>
+          <h2 id="htu-title">Voucher Gap Analysis 2022</h2>
         </div>
         <button id="htu-close" aria-label="Close">&times;</button>
       </div>
@@ -206,7 +265,7 @@
         </div>
       </div>
       <div id="htu-footer">
-        <button id="htu-dismiss">Got it &mdash; Explore the Map</button>
+        <button id="htu-dismiss">Explore the Map</button>
       </div>
     </div>
   </div>

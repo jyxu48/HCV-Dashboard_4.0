@@ -27,15 +27,47 @@ const AMI_CFG = {
 const VAR_CFG = {
   raw:      { shareField: null,              shareLabel: null,                          label: 'Raw Gap'      },
   renters:  { shareField: 'renter_share',    shareLabel: 'Renter Share',               label: 'Renters'      },
-  children: { shareField: 'children_share',  shareLabel: 'Share of HHs with Children', label: 'Children HH'  },
-  elderly:  { shareField: 'elderly_share',   shareLabel: 'Share of HHs with Elderly',  label: 'Elderly HH'   },
-  poc:      { shareField: 'poc_share',       shareLabel: 'Share of HHs of Color',      label: 'HH of Color'  },
-  poverty:  { shareField: 'poverty_share',   shareLabel: 'Share of HHs in Poverty',    label: 'Poverty HH'   },
+  children: { shareField: 'children_share',  shareLabel: 'Share of Households with Children', label: 'Children Households'  },
+  elderly:  { shareField: 'elderly_share',   shareLabel: 'Share of Households with Elderly',  label: 'Elderly Households'   },
+  poc:      { shareField: 'poc_share',       shareLabel: 'Share of Households of Color',      label: 'Households of Color'  },
+  poverty:  { shareField: 'poverty_share',   shareLabel: 'Share of Households in Poverty',    label: 'Poverty Households'   },
 };
+
+// ── CSV parser ────────────────────────────────────────────────────────────────
+function parseCSVLine(line) {
+  const out = []; let cur = '', inQ = false;
+  for (const ch of line) {
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { out.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  out.push(cur);
+  return out;
+}
+function parseHouseholdCSV(text) {
+  if (!text) return {};
+  const lines = text.trim().split('\n');
+  const hdrs  = lines[0].split(',').map(h => h.trim());
+  const result = {};
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const vals = parseCSVLine(lines[i]);
+    const row  = {};
+    hdrs.forEach((h, j) => { row[h] = (vals[j] || '').trim(); });
+    if (row.GEOID) result[row.GEOID] = {
+      total_households:  +row.total_households  || null,
+      renter_households: +row.renter_households || null,
+      pct_renter:        +row.pct_renter        || null
+    };
+  }
+  return result;
+}
 
 // ── App state ─────────────────────────────────────────────────────────────────
 let gapData        = null;   // gap2022_state.json
 let gapCountyData  = null;   // gap2022_county.json
+let hhStateData    = {};     // state_households_2022.csv
+let hhCountyData   = {};     // county_households_2022.csv
 let gapTractData   = {};     // per-state tract data, lazy-loaded on demand
 let gapAtlas       = null;
 let gapStateFeats  = null;
@@ -65,11 +97,18 @@ map.on('load', () => { initGapModule(); });
 async function initGapModule() {
   document.getElementById('gap-loading').classList.remove('hidden');
   try {
-    [gapData, gapCountyData, gapAtlas] = await Promise.all([
+    const [_gap, _cty, _atlas, _hhState, _hhCounty] = await Promise.all([
       fetch('data/gap2022_state.json').then(r => r.json()),
       fetch('data/gap2022_county.json').then(r => r.json()).catch(() => null),
-      fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(r => r.json())
+      fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json').then(r => r.json()),
+      fetch('data/state_households_2022.csv').then(r => r.text()).catch(() => ''),
+      fetch('data/county_households_2022.csv').then(r => r.text()).catch(() => '')
     ]);
+    gapData       = _gap;
+    gapCountyData = _cty;
+    gapAtlas      = _atlas;
+    hhStateData   = parseHouseholdCSV(_hhState);
+    hhCountyData  = parseHouseholdCSV(_hhCounty);
     gapStateFeats  = topojson.feature(gapAtlas, gapAtlas.objects.states).features;
     gapCountyFeats = topojson.feature(gapAtlas, gapAtlas.objects.counties).features;
 
@@ -339,6 +378,111 @@ async function loadTractLayer(stateFips, stateGeom) {
   });
 }
 
+// ── PHA spatial lookups (populated when overlay loads) ─────────────────────────
+let phaStateLookup = {};  // stateAb (2-char) → [pha_name, ...]
+let phaBBoxCache   = [];  // [{bbox:[minLng,minLat,maxLng,maxLat], name}]
+
+function bbox4(geom) {
+  const cs = flattenCoords(geom);
+  if (!cs.length) return null;
+  const lngs = cs.map(c => c[0]), lats = cs.map(c => c[1]);
+  return [Math.min(...lngs), Math.min(...lats), Math.max(...lngs), Math.max(...lats)];
+}
+function bboxIntersects(a, b) {
+  return a[0] <= b[2] && a[2] >= b[0] && a[1] <= b[3] && a[3] >= b[1];
+}
+
+function buildPhaLookups(features) {
+  phaStateLookup = {};
+  phaBBoxCache   = [];
+  for (const f of features) {
+    const p    = f.properties || {};
+    const code = String(p.pha_code || p.PARTICIPAN || p.PHA_CODE || '').trim().toUpperCase();
+    const name = (p.pha_name || p.AGENCY_NAME || p.NAME || '').trim();
+    if (!name) continue;
+    const stAb = code.slice(0, 2);
+    if (stAb) {
+      if (!phaStateLookup[stAb]) phaStateLookup[stAb] = [];
+      phaStateLookup[stAb].push(name);
+    }
+    const bbox = bbox4(f.geometry);
+    if (bbox) phaBBoxCache.push({ bbox, name });
+  }
+}
+
+function getPhasForState(fips2) {
+  const stAb = FIPS_TO_STATE[fips2];
+  return stAb ? (phaStateLookup[stAb] || []) : [];
+}
+
+function getPhasForCounty(fips5) {
+  const feat = gapCountyFeats?.find(f => String(f.id).padStart(5, '0') === fips5);
+  if (!feat) return [];
+  const cb = bbox4(feat.geometry);
+  if (!cb) return [];
+  return phaBBoxCache.filter(p => bboxIntersects(cb, p.bbox)).map(p => p.name);
+}
+
+function phaListHTML(names, label) {
+  if (!names.length) return '';
+  const CAP   = 7;
+  const shown = names.slice(0, CAP);
+  const more  = names.length > CAP ? `<div class="gap-popup-more">+${names.length - CAP} more</div>` : '';
+  return `
+    <div class="gap-popup-divider"></div>
+    <div class="gap-popup-pha-label">${label}</div>
+    <div class="gap-popup-pha-list">${shown.map(n => `<div class="gap-popup-pha-item">${n}</div>`).join('')}${more}</div>`;
+}
+
+// ── Hover tooltip popup ────────────────────────────────────────────────────────
+const gapHoverPopup = new mapboxgl.Popup({
+  closeButton: false,
+  closeOnClick: false,
+  className: 'gap-hover-popup',
+  maxWidth: '300px',
+  offset: 12
+});
+
+function buildStatePopupHTML(fips2) {
+  const rec  = gapData?.[fips2];
+  if (!rec) return '';
+  const hh   = hhStateData[fips2];
+  const name = rec.name || fips2;
+  const row  = (label, val) => `
+    <div class="gap-popup-row">
+      <span class="gap-popup-label">${label}</span>
+      <span class="gap-popup-val">${val}</span>
+    </div>`;
+  const phas = phaOverlayVisible && phaOverlayLoaded ? phaListHTML(getPhasForState(fips2), 'PHAs in this state') : '';
+  return `
+    <div class="gap-popup-name">${name}</div>
+    ${row('Total Households', hh ? fmtN(hh.total_households) : 'N/A')}
+    ${row('% Renter',         hh && hh.pct_renter != null ? (hh.pct_renter * 100).toFixed(1) + '%' : 'N/A')}
+    ${phas}`;
+}
+
+function buildCountyPopupHTML(fips5) {
+  const rec = gapCountyData?.[fips5];
+  if (!rec) return '';
+  const hh         = hhCountyData[fips5];
+  const fullName   = rec.name || fips5;
+  const commaIdx   = fullName.lastIndexOf(', ');
+  const countyName = commaIdx !== -1 ? fullName.slice(0, commaIdx) : fullName;
+  const stateName  = rec.stateFips ? (gapData?.[rec.stateFips]?.name || rec.stateAb || '') : (rec.stateAb || '');
+  const row        = (label, val) => `
+    <div class="gap-popup-row">
+      <span class="gap-popup-label">${label}</span>
+      <span class="gap-popup-val">${val}</span>
+    </div>`;
+  const phas = phaOverlayVisible && phaOverlayLoaded ? phaListHTML(getPhasForCounty(fips5), 'PHAs in this county') : '';
+  return `
+    <div class="gap-popup-name">${countyName}</div>
+    ${row('State',            stateName)}
+    ${row('Total Households', hh ? fmtN(hh.total_households) : 'N/A')}
+    ${row('% Renter',         hh && hh.pct_renter != null ? (hh.pct_renter * 100).toFixed(1) + '%' : 'N/A')}
+    ${phas}`;
+}
+
 // ── Interactions ──────────────────────────────────────────────────────────────
 function setupInteractions() {
   map.on('mousemove','gap-state-fill', e => {
@@ -353,10 +497,13 @@ function setupInteractions() {
       map.setFeatureState({source:'gap-states',id:gapHovId},{hovered:false});
     gapHovId = feat.id;
     map.setFeatureState({source:'gap-states',id:gapHovId},{hovered:true});
+    const html = buildStatePopupHTML(fips2);
+    if (html) gapHoverPopup.setLngLat(e.lngLat).setHTML(html).addTo(map);
     if (!gapLocId) renderSidebar('state', fips2, false);
   });
   map.on('mouseleave','gap-state-fill', () => {
     map.getCanvas().style.cursor = '';
+    gapHoverPopup.remove();
     if (gapGeo === 'tract') {
       document.getElementById('hint-primary').textContent = 'Click a state to load its census tracts.'; return;
     }
@@ -386,10 +533,13 @@ function setupInteractions() {
       map.setFeatureState({source:'gap-counties',id:gapCtyHovId},{hovered:false});
     gapCtyHovId = feat.id;
     map.setFeatureState({source:'gap-counties',id:gapCtyHovId},{hovered:true});
+    const html = buildCountyPopupHTML(fips5);
+    if (html) gapHoverPopup.setLngLat(e.lngLat).setHTML(html).addTo(map);
     if (!gapCtyLocId) renderSidebar('county', fips5, false);
   });
   map.on('mouseleave','gap-county-fill', () => {
     map.getCanvas().style.cursor = '';
+    gapHoverPopup.remove();
     if (gapCtyHovId !== null) { map.setFeatureState({source:'gap-counties',id:gapCtyHovId},{hovered:false}); gapCtyHovId = null; }
     if (!gapCtyLocId) showDefaultPanel();
   });
@@ -438,10 +588,11 @@ function renderSidebar(geoType, fips, locked) {
   const dispGap  = gapVar === 'raw' ? rawGap : rec[`norm_gap_${gapAMI}_${gapVar}`];
   const shareVal = vcfg.shareField ? rec[vcfg.shareField] : null;
 
+  const hhRec = geoType === 'state' ? hhStateData[fips] : hhCountyData[fips];
   buildSidebarHTML(
     dispGap, rawGap, eligible, vouchers, total,
     rec.total_units, rec.pct_occupied,
-    cfg.label, shareVal, vcfg
+    cfg.label, shareVal, vcfg, hhRec
   );
 }
 
@@ -470,7 +621,7 @@ function renderTractSidebar(fips11) {
   );
 }
 
-function buildSidebarHTML(dispGap, rawGap, eligible, vouchers, total, totalUnits, pctOcc, amiLabel, shareVal, vcfg) {
+function buildSidebarHTML(dispGap, rawGap, eligible, vouchers, total, totalUnits, pctOcc, amiLabel, shareVal, vcfg, hhRec) {
   const grid   = document.getElementById('gap-metrics');
   const isNorm = vcfg && vcfg.shareField;
   const dispLabel = isNorm
@@ -486,6 +637,21 @@ function buildSidebarHTML(dispGap, rawGap, eligible, vouchers, total, totalUnits
       <div class="metric-label">${dispLabel}</div>
       <div class="metric-value${dispGap == null ? ' na' : ''}">${dispStr}</div>
     </div>`;
+
+  const hhSection = hhRec ? `
+    <div class="sidebar-section-label">HOUSEHOLD CONTEXT (ACS 2022)</div>
+    <div class="metric-card">
+      <div class="metric-label">Total Households</div>
+      <div class="metric-value">${fmtN(hhRec.total_households)}</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Renter Households</div>
+      <div class="metric-value">${fmtN(hhRec.renter_households)}</div>
+    </div>
+    <div class="metric-card span-2">
+      <div class="metric-label">% Renter Households</div>
+      <div class="metric-value">${hhRec.pct_renter != null ? (hhRec.pct_renter * 100).toFixed(1) + '%' : 'N/A'}</div>
+    </div>` : '';
 
   const actualVouchers = (totalUnits != null && pctOcc != null)
     ? Math.round(totalUnits * pctOcc / 100) : null;
@@ -539,7 +705,7 @@ function buildSidebarHTML(dispGap, rawGap, eligible, vouchers, total, totalUnits
       <div class="formula-calc">${formulaCalc}</div>
     </div>`;
 
-  grid.innerHTML = ratioRow + vars + acsSection + formula;
+  grid.innerHTML = ratioRow + hhSection + vars + acsSection + formula;
 }
 
 function showDefaultPanel() {
@@ -659,6 +825,63 @@ document.querySelectorAll('#geo-toggle .tog-btn').forEach(btn => {
     else if (gapGeo === 'county') { showCountyLayers(); paintCounties(); }
     else { showTractLayers(); if (Object.keys(gapTractData).length) paintTractFeatureState(); }
   });
+});
+
+// ── PHA Boundary Overlay ──────────────────────────────────────────────────────
+let phaOverlayLoaded  = false;
+let phaOverlayVisible = false;
+
+async function loadPhaOverlay() {
+  const btn = document.getElementById('pha-overlay-btn');
+  btn.textContent = 'Loading…';
+  btn.disabled = true;
+  try {
+    const geojson = await fetch('data/pha_master_latest.geojson').then(r => r.json());
+    buildPhaLookups(geojson.features);
+    map.addSource('pha-overlay', { type: 'geojson', data: geojson });
+    // Transparent fill (just to make the polygon area hoverable if needed)
+    map.addLayer({
+      id: 'pha-overlay-fill',
+      type: 'fill',
+      source: 'pha-overlay',
+      paint: { 'fill-color': '#000000', 'fill-opacity': 0 }
+    });
+    // Thick blue boundary lines
+    map.addLayer({
+      id: 'pha-overlay-line',
+      type: 'line',
+      source: 'pha-overlay',
+      paint: {
+        'line-color': '#1d4ed8',
+        'line-width': 2,
+        'line-opacity': 0.85
+      }
+    });
+    phaOverlayLoaded = true;
+  } catch (err) {
+    console.error('PHA overlay load failed:', err);
+    btn.textContent = 'PHA Boundaries';
+    btn.disabled = false;
+    return;
+  }
+  btn.textContent = 'PHA Boundaries';
+  btn.disabled = false;
+}
+
+document.getElementById('pha-overlay-btn').addEventListener('click', async () => {
+  phaOverlayVisible = !phaOverlayVisible;
+  const btn = document.getElementById('pha-overlay-btn');
+  btn.classList.toggle('active', phaOverlayVisible);
+
+  if (phaOverlayVisible && !phaOverlayLoaded) {
+    await loadPhaOverlay();
+  }
+
+  if (phaOverlayLoaded) {
+    const vis = phaOverlayVisible ? 'visible' : 'none';
+    map.setLayoutProperty('pha-overlay-fill', 'visibility', vis);
+    map.setLayoutProperty('pha-overlay-line', 'visibility', vis);
+  }
 });
 
 // ── Sidebar drag-to-resize ─────────────────────────────────────────────────

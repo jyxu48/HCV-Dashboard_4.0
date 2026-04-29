@@ -159,7 +159,7 @@
     <div class="card-title">Effective Under Lease</div>
     <div class="card-desc">Vouchers Effectively Under Lease ÷ Total Vouchers</div>
     <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
-    <div class="chart-wrap"><canvas id="eff-chart"></canvas></div>
+    <div class="chart-wrap"><canvas id="eff-chart"  style="height:240px"></canvas></div>
   </div>
 
   <!-- Utilization Rate -->
@@ -167,7 +167,7 @@
     <div class="card-title">Utilization Rate</div>
     <div class="card-desc">Vouchers Under Lease ÷ Total Vouchers</div>
     <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
-    <div class="chart-wrap"><canvas id="util-chart"></canvas></div>
+    <div class="chart-wrap"><canvas id="util-chart" style="height:240px"></canvas></div>
   </div>
 
   <!-- Success Rate -->
@@ -175,7 +175,7 @@
     <div class="card-title">Success Rate</div>
     <div class="card-desc">Successfully Leased Vouchers ÷ Total Vouchers Issued</div>
     <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
-    <div class="chart-wrap"><canvas id="succ-chart"></canvas></div>
+    <div class="chart-wrap"><canvas id="succ-chart" style="height:240px"></canvas></div>
   </div>
 
   <!-- Cost Per Voucher -->
@@ -183,23 +183,15 @@
     <div class="card-title">Cost Per Voucher ($/month)</div>
     <div class="card-desc">Total HAP Expenditure ÷ Vouchers Under Lease</div>
     <div class="chart-legend"><span class="leg-top">▪ Top 5 Lowest Cost</span><span class="leg-bot">▪ Bottom 5 Highest Cost</span></div>
-    <div class="chart-wrap"><canvas id="cost-chart"></canvas></div>
-  </div>
-
-  <!-- Reserve Balance -->
-  <div class="card" id="card-res">
-    <div class="card-title">Reserve Balance ($)</div>
-    <div class="card-desc">Cumulative Unexpended Net Program Reserves (UNP − RNP)</div>
-    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest Reserve</span><span class="leg-bot">▪ Bottom 5 Most Deficit</span></div>
-    <div class="chart-wrap"><canvas id="res-chart"></canvas></div>
+    <div class="chart-wrap"><canvas id="cost-chart" style="height:240px"></canvas></div>
   </div>
 
   <!-- Port-In Rate -->
   <div class="card" id="card-port">
     <div class="card-title">Port-In Rate</div>
     <div class="card-desc">Port-In Vouchers ÷ Total Vouchers Under Lease</div>
-    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
-    <div class="chart-wrap"><canvas id="port-chart"></canvas></div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span></div>
+    <div class="chart-wrap"><canvas id="port-chart" style="height:240px"></canvas></div>
   </div>
 
 </div>
@@ -222,49 +214,44 @@
 
 const INDICATORS = [
   {
-    key:     'effective_under_lease',
-    chartId: 'eff-chart',
-    fmt:     v => (v * 100).toFixed(1) + '%',
-    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
-    filter:  v => v > 0.4 && v < 1.5,
-    topDir:  'desc',
-    xFmt:    v => (v * 100).toFixed(0) + '%',
+    key:      'effective_under_lease',
+    chartId:  'eff-chart',
+    fmt:      v => (v * 100).toFixed(1) + '%',
+    sub:      r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:   v => v > 0.4 && v < 1.5,
+    topDir:   'desc',
+    xFmt:     v => (v * 100).toFixed(0) + '%',
+    vertical: true,
   },
   {
-    key:     'utilization_rate',
-    chartId: 'util-chart',
-    fmt:     v => (v * 100).toFixed(1) + '%',
-    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
-    filter:  v => v > 0.4 && v < 1.5,
-    topDir:  'desc',
-    xFmt:    v => (v * 100).toFixed(0) + '%',
+    key:      'utilization_rate',
+    chartId:  'util-chart',
+    fmt:      v => (v * 100).toFixed(1) + '%',
+    sub:      r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:   v => v > 0.4 && v < 1.5,
+    topDir:   'desc',
+    xFmt:     v => (v * 100).toFixed(0) + '%',
+    vertical: true,
   },
   {
-    key:     'success_rate',
-    chartId: 'succ-chart',
-    fmt:     v => (v * 100).toFixed(1) + '%',
-    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
-    filter:  v => v > 0.2 && v <= 1.001,
-    topDir:  'desc',
-    xFmt:    v => (v * 100).toFixed(0) + '%',
+    key:      'success_rate',
+    chartId:  'succ-chart',
+    fmt:      v => (v * 100).toFixed(1) + '%',
+    sub:      r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:   v => v > 0.2 && v <= 1.001,
+    topDir:   'desc',
+    xFmt:     v => (v * 100).toFixed(0) + '%',
+    vertical: true,
   },
   {
-    key:     'cost_per_voucher',
-    chartId: 'cost-chart',
-    fmt:     v => '$' + v.toFixed(0),
-    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
-    filter:  v => v > 50 && v < 4000,
-    topDir:  'asc',
-    xFmt:    v => '$' + v.toFixed(0),
-  },
-  {
-    key:     'reserve_balance',
-    chartId: 'res-chart',
-    fmt:     v => (v >= 0 ? '+' : '') + '$' + Math.abs(v/1000).toFixed(0) + 'k',
-    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
-    filter:  v => v > -50_000_000 && v < 50_000_000,
-    topDir:  'desc',
-    xFmt:    v => '$' + (v/1000).toFixed(0) + 'k',
+    key:      'cost_per_voucher',
+    chartId:  'cost-chart',
+    fmt:      v => '$' + v.toFixed(0),
+    sub:      r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:   v => v > 50 && v < 4000,
+    topDir:   'asc',
+    xFmt:     v => '$' + v.toFixed(0),
+    vertical: true,
   },
   {
     key:     'port_in_rate',
@@ -274,6 +261,8 @@ const INDICATORS = [
     filter:  v => v >= 0 && v <= 1,
     topDir:  'desc',
     xFmt:    v => (v * 100).toFixed(0) + '%',
+    topOnly: true,
+    vertical: true,
   },
 ];
 
@@ -304,7 +293,7 @@ function buildAll() {
   INDICATORS.forEach(ind => buildPair(ind, pool));
 }
 
-// ── Build combined top+bottom chart ─────────────────────────────────────────
+// ── Build chart ───────────────────────────────────────────────────────────────
 function buildPair(ind, pool) {
   const valid = pool
     .filter(p => p[ind.key] != null && ind.filter(p[ind.key]))
@@ -314,7 +303,16 @@ function buildPair(ind, pool) {
   const desc = [...valid].sort((a,b) => b._v - a._v);
 
   const top5 = (ind.topDir === 'desc' ? desc : asc).slice(0, 5);
-  const bot5 = (ind.topDir === 'desc' ? asc  : desc).slice(0, 5);
+
+  if (ind.topOnly) {
+    // Top-5 only, vertical bars
+    const records = [...top5].sort((a,b) => b._v - a._v);
+    const colors  = records.map(() => '#3a9e7acc');
+    renderCombined(ind.chartId, records, colors, ind);
+    return;
+  }
+
+  const bot5 = (ind.topDir === 'desc' ? asc : desc).slice(0, 5);
 
   // Combine and sort highest → lowest for display (shared scale)
   const topCodes = new Set(top5.map(r => r.pha_code));
@@ -341,7 +339,11 @@ function renderCombined(canvasId, records, colors, ind) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
 
-  const labels = records.map(r => shortPha(r.pha_name));
+  const isVertical = !!ind.vertical;
+  const labels = records.map(r => {
+    const stateAb = String(r.pha_code || '').slice(0, 2).toUpperCase();
+    return [shortPha(r.pha_name), stateAb];
+  });
   const values = records.map(r => r._v);
 
   const ctx = canvas.getContext('2d');
@@ -353,20 +355,37 @@ function renderCombined(canvasId, records, colors, ind) {
         data:            values,
         backgroundColor: colors,
         borderColor:     'transparent',
-        borderRadius:    3,
+        borderRadius:    4,
         borderSkipped:   false,
       }]
     },
     options: {
-      indexAxis:  'y',
+      indexAxis:  isVertical ? 'x' : 'y',
       responsive: true,
       maintainAspectRatio: false,
-      layout: { padding: { right: 8 } },
+      layout: { padding: isVertical ? { top: 12 } : { right: 8 } },
       plugins: {
         legend:  { display: false },
         tooltip: { enabled: false },
       },
-      scales: {
+      scales: isVertical ? {
+        x: {
+          grid:   { display: false },
+          ticks:  {
+            color: '#5a637a',
+            font:  { size: 10.5 },
+            maxRotation: 35,
+            minRotation: 20,
+          },
+          border: { color: '#e0e4f0' },
+        },
+        y: {
+          grid:   { color: '#f0f1f7' },
+          ticks:  { color: '#7a86a8', font: { size: 10 }, callback: v => ind.xFmt(v) },
+          border: { color: '#e0e4f0' },
+          beginAtZero: true,
+        }
+      } : {
         x: {
           grid:   { color: '#f0f1f7' },
           ticks:  { color: '#7a86a8', font: { size: 10 }, callback: v => ind.xFmt(v) },
@@ -383,7 +402,10 @@ function renderCombined(canvasId, records, colors, ind) {
       }
     }
   });
-  canvas.style.height = (records.length * 40 + 20) + 'px';
+
+  if (!isVertical) {
+    canvas.style.height = (records.length * 40 + 20) + 'px';
+  }
 
   // Tooltip
   const tooltip = document.getElementById('tooltip');

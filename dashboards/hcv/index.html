@@ -17,18 +17,7 @@
       <h1>Housing Choice Voucher Performance</h1>
       <p>PHA-Level Efficiency Indicators · HUD VMS Data</p>
     </div>
-    <div id="header-right">
-<div id="pha-metric-wrap">
-        <label for="metric-select">Metric</label>
-        <select id="metric-select">
-          <option value="effective_under_lease">Effective Under Lease</option>
-          <option value="utilization_rate">Utilization Rate</option>
-          <option value="success_rate">Success Rate</option>
-          <option value="cost_per_voucher">Cost Per Voucher</option>
-          <option value="port_in_rate">Port-In Rate</option>
-        </select>
-      </div>
-    </div>
+    <div id="header-right"></div>
   </header>
 
   <!-- ── Main Layout ── -->
@@ -57,6 +46,18 @@
 
       <!-- ══ PHA Performance content (hidden in gap mode) ══ -->
       <div id="pha-sidebar-content">
+
+        <!-- Metric selector -->
+        <div id="pha-metric-wrap">
+          <label for="metric-select">Metric</label>
+          <select id="metric-select">
+            <option value="effective_under_lease">Effective Under Lease</option>
+            <option value="utilization_rate">Utilization Rate</option>
+            <option value="success_rate">Success Rate</option>
+            <option value="cost_per_voucher">Cost Per Voucher</option>
+            <option value="port_in_rate">Port-In Rate</option>
+          </select>
+        </div>
 
         <!-- Info panel (hover / click state) -->
         <div id="info-panel">
@@ -163,6 +164,35 @@
       cursor: pointer; letter-spacing: 0.03em; transition: background 0.15s;
     }
     #htu-dismiss:hover { background: #2d5491; }
+
+    /* ── PHA hover popup ── */
+    .pha-hover-popup .mapboxgl-popup-content {
+      background: #ffffff;
+      border: 1px solid #d0d5e8;
+      border-radius: 8px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+      font-family: inherit;
+      pointer-events: none;
+    }
+    .pha-hover-popup .mapboxgl-popup-tip { display: none; }
+    .pha-popup-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #1a1d2e;
+      margin-bottom: 7px;
+      line-height: 1.3;
+    }
+    .pha-popup-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 11.5px;
+      color: #4a5070;
+      margin-top: 3px;
+    }
+    .pha-popup-label { color: #7a86a8; }
+    .pha-popup-val { font-weight: 600; color: #1a1d2e; }
   </style>
 
   <div id="htu-overlay">
@@ -196,7 +226,7 @@
         </div>
       </div>
       <div id="htu-footer">
-        <button id="htu-dismiss">Got it &mdash; Explore the Map</button>
+        <button id="htu-dismiss">Explore the Map</button>
       </div>
     </div>
   </div>

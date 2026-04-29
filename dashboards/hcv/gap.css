@@ -323,6 +323,22 @@ html, body {
 .tog-btn:hover { color: #111827; }
 .tog-btn.active { background: #1e3a5f; color: #ffffff; font-weight: 600; }
 
+/* PHA overlay toggle — full-width, distinct from group toggles */
+.overlay-btn {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 7px 10px;
+  text-align: left;
+  font-size: 0.85em;
+  background: #f9fafb;
+  color: #1a1d2e;
+}
+.overlay-btn::before { content: '○  '; font-size: 0.9em; color: #9ca3af; }
+.overlay-btn.active { background: #1d4ed8; color: #ffffff; border-color: #1d4ed8; font-weight: 600; }
+.overlay-btn.active::before { content: '●  '; color: #93c5fd; }
+.overlay-btn:disabled { opacity: 0.6; cursor: wait; }
+
 /* Loading */
 #gap-loading, #tract-loading {
   font-size: 0.85em;

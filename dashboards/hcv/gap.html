@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Voucher Gap Analysis</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="gap.css" />
+</head>
+<body>
+
+  <header id="header">
+    <div id="header-left">
+      <h1>Voucher Gap Analysis</h1>
+      <p>Eligible Renters ÷ Vouchers Under Lease · HUD PSH &amp; CHAS · 2022</p>
+    </div>
+    <div id="header-right"></div>
+  </header>
+
+  <div id="app">
+
+    <!-- Map -->
+    <div id="map-wrap">
+      <div id="map"></div>
+
+      <!-- Legend -->
+      <div id="legend">
+        <div id="legend-title">Voucher Gap Ratio · &lt;30% AMI (ELI)</div>
+        <div id="legend-scale">
+          <div id="legend-gradient"></div>
+          <div id="legend-labels">
+            <span id="legend-min"></span>
+            <span id="legend-mid"></span>
+            <span id="legend-max"></span>
+          </div>
+        </div>
+        <div id="legend-na"><span class="na-swatch"></span> No Data</div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+
+      <!-- Controls (moved from map overlay) -->
+      <div id="gap-controls">
+
+        <div class="gap-ctrl-group">
+          <div class="gap-ctrl-label">AMI THRESHOLD</div>
+          <div class="tog-group" id="ami-toggle">
+            <button class="tog-btn active" data-ami="30">&lt;30%</button>
+            <button class="tog-btn"        data-ami="50">30–50%</button>
+            <button class="tog-btn"        data-ami="80">50–80%</button>
+          </div>
+        </div>
+
+        <div class="gap-ctrl-group">
+          <div class="gap-ctrl-label">VOUCHER GAP RATIO</div>
+          <div class="tog-group" id="raw-toggle">
+            <button class="tog-btn active" data-var="raw">Show Raw Gap</button>
+          </div>
+        </div>
+
+        <div class="gap-ctrl-group">
+          <div class="gap-ctrl-label">WEIGHTED BY SHARE OF</div>
+          <div class="tog-group" id="var-toggle">
+            <button class="tog-btn" data-var="renters">Renters</button>
+            <button class="tog-btn" data-var="children">Children HH</button>
+            <button class="tog-btn" data-var="elderly">Elderly HH</button>
+            <button class="tog-btn" data-var="poc">HH of Color</button>
+            <button class="tog-btn" data-var="poverty">Poverty HH</button>
+          </div>
+        </div>
+
+        <div class="gap-ctrl-group">
+          <div class="gap-ctrl-label">GEOGRAPHY</div>
+          <div class="tog-group" id="geo-toggle">
+            <button class="tog-btn active" data-val="state">State</button>
+            <button class="tog-btn" data-val="county">County</button>
+            <button class="tog-btn" data-val="tract">Tract</button>
+          </div>
+        </div>
+
+        <!-- Tract state selector (shown only in tract mode) -->
+        <div id="tract-state-group" class="gap-ctrl-group hidden">
+          <div class="gap-ctrl-label">SELECT STATE</div>
+          <select id="tract-state-select">
+            <option value="">— click map or select —</option>
+          </select>
+          <div id="tract-state-hint">Or click any state on the map</div>
+        </div>
+
+        <div id="gap-loading" class="hidden">Loading gap data…</div>
+        <div id="tract-loading" class="hidden">Loading tract data…</div>
+      </div>
+
+      <div id="gap-info-panel">
+        <div id="gap-info-default">
+          <div class="info-icon">&#9432;</div>
+          <p id="hint-primary">Hover over a region to see the voucher gap ratio.</p>
+          <p id="hint-secondary">Click to lock selection.</p>
+        </div>
+        <div id="gap-info-content" class="hidden">
+          <div id="gap-info-header">
+            <div id="gap-geo-name"></div>
+            <div id="gap-geo-sub"></div>
+          </div>
+          <div id="gap-metrics"></div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="gap.js?v=6"></script>
+
+  <!-- ── How-to overlay ── -->
+  <style>
+    #htu-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.40);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    #htu-overlay.hidden { display: none; }
+    #htu-card {
+      background: #fff; border-radius: 14px;
+      width: 500px; max-width: calc(100vw - 32px); max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.20);
+      font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden;
+    }
+    #htu-header {
+      padding: 22px 22px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    #htu-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #9ca3af; display: block; margin-bottom: 5px;
+    }
+    #htu-title {
+      font-size: 17px; font-weight: 600; color: #111827;
+      margin: 0; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    #htu-close {
+      background: none; border: none; font-size: 22px;
+      color: #9ca3af; cursor: pointer; padding: 0 0 0 12px; line-height: 1;
+    }
+    #htu-close:hover { color: #111827; }
+    #htu-body { padding: 18px 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 18px; }
+    .htu-section-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #6b7280; margin: 0 0 9px;
+    }
+    #htu-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+    #htu-list li { font-size: 13px; color: #374151; line-height: 1.6; }
+    #htu-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .htu-chip {
+      font-size: 11.5px; font-weight: 500; color: #1e3a5f;
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 20px; padding: 4px 11px;
+    }
+    #htu-footer { padding: 14px 22px; border-top: 1px solid #f3f4f6; }
+    #htu-dismiss {
+      width: 100%; background: #1e3a5f; color: #fff; border: none;
+      border-radius: 8px; padding: 11px 0; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.03em; transition: background 0.15s;
+    }
+    #htu-dismiss:hover { background: #2d5491; }
+  </style>
+
+  <div id="htu-overlay">
+    <div id="htu-card">
+      <div id="htu-header">
+        <div>
+          <span id="htu-tag">Module 01</span>
+          <h2 id="htu-title">Voucher Gap Analysis</h2>
+        </div>
+        <button id="htu-close" aria-label="Close">&times;</button>
+      </div>
+      <div id="htu-body">
+        <div>
+          <p class="htu-section-label">How to Use</p>
+          <ul id="htu-list">
+            <li>Use the <strong>AMI Threshold</strong> toggles to filter by income bracket (&lt;30%, 30–50%, or 50–80% of AMI).</li>
+            <li>Switch between <strong>Raw Gap</strong> and weighted variants — weighted options include renters, children, elderly, households of color, and poverty.</li>
+            <li>Click any <strong>state</strong> to drill into county-level data; select a county to load census tract detail.</li>
+            <li>The <strong>sidebar</strong> updates with gap statistics, eligible renter counts, and voucher coverage for the selected geography.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="htu-section-label">Key Indicators</p>
+          <div id="htu-chips">
+            <span class="htu-chip">Raw Voucher Gap Ratio</span>
+            <span class="htu-chip">Renter-Weighted Gap</span>
+            <span class="htu-chip">Children-Weighted Gap</span>
+            <span class="htu-chip">Elderly-Weighted Gap</span>
+            <span class="htu-chip">Households of Color Gap</span>
+            <span class="htu-chip">Poverty-Weighted Gap</span>
+            <span class="htu-chip">Eligible Renters (CHAS)</span>
+            <span class="htu-chip">Vouchers Under Lease</span>
+          </div>
+        </div>
+      </div>
+      <div id="htu-footer">
+        <button id="htu-dismiss">Got it &mdash; Explore the Map</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const _ov = document.getElementById('htu-overlay');
+    function _dismiss() { _ov.classList.add('hidden'); }
+    document.getElementById('htu-dismiss').addEventListener('click', _dismiss);
+    document.getElementById('htu-close').addEventListener('click', _dismiss);
+    _ov.addEventListener('click', e => { if (e.target === _ov) _dismiss(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') _dismiss(); });
+  </script>
+</body>
+</html>

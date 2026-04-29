@@ -1,0 +1,49 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "zip": "19104",
+        "rent": 1200,
+        "subsidy": 900,
+        "gap": 300,
+        "poverty": 0.25,
+        "voucher_density": 0.12,
+        "trend": [1000, 1050, 1100, 1150, 1200]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.22, 39.94],
+          [-75.20, 39.94],
+          [-75.20, 39.96],
+          [-75.22, 39.96],
+          [-75.22, 39.94]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "zip": "19103",
+        "rent": 1800,
+        "subsidy": 1100,
+        "gap": 700,
+        "poverty": 0.12,
+        "voucher_density": 0.05,
+        "trend": [1500, 1600, 1700, 1750, 1800]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-75.18, 39.94],
+          [-75.16, 39.94],
+          [-75.16, 39.96],
+          [-75.18, 39.96],
+          [-75.18, 39.94]
+        ]]
+      }
+    }
+  ]
+}

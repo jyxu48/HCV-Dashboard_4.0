@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>HCV Performance Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ── Top Header ── -->
+  <header id="header">
+    <div id="header-left">
+      <h1>Housing Choice Voucher Performance</h1>
+      <p>PHA-Level Efficiency Indicators · HUD VMS Data</p>
+    </div>
+    <div id="header-right">
+<div id="pha-metric-wrap">
+        <label for="metric-select">Metric</label>
+        <select id="metric-select">
+          <option value="effective_under_lease">Effective Under Lease</option>
+          <option value="utilization_rate">Utilization Rate</option>
+          <option value="success_rate">Success Rate</option>
+          <option value="cost_per_voucher">Cost Per Voucher</option>
+          <option value="port_in_rate">Port-In Rate</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main Layout ── -->
+  <div id="app">
+
+    <!-- Map container -->
+    <div id="map-wrap">
+      <div id="map"></div>
+
+
+      <div id="legend">
+        <div id="legend-title">Utilization Rate</div>
+        <div id="legend-scale">
+          <div id="legend-gradient"></div>
+          <div id="legend-labels">
+            <span id="legend-min"></span>
+            <span id="legend-mid"></span>
+            <span id="legend-max"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+
+      <!-- ══ PHA Performance content (hidden in gap mode) ══ -->
+      <div id="pha-sidebar-content">
+
+        <!-- Info panel (hover / click state) -->
+        <div id="info-panel">
+          <div id="info-default">
+            <div id="info-icon">&#9432;</div>
+            <p>Hover over a PHA to see performance indicators.</p>
+            <p>Click to lock selection and view trend.</p>
+          </div>
+          <div id="info-content" class="hidden">
+            <div id="info-header">
+              <div id="info-pha-name"></div>
+              <div id="info-pha-code"></div>
+            </div>
+            <div id="info-metrics"></div>
+          </div>
+        </div>
+
+        <!-- Time-series chart -->
+        <div id="chart-panel" class="hidden">
+          <div id="chart-header">
+            <span id="chart-pha-label"></span>
+            <span id="chart-metric-label"></span>
+          </div>
+          <div id="chart-wrap">
+            <canvas id="trend-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Download panel -->
+        <div id="download-panel">
+          <div id="download-title">Download Data</div>
+          <div id="download-options">
+            <label><input type="checkbox" id="dl-effective" checked> Effective Under Lease</label>
+            <label><input type="checkbox" id="dl-utilization" checked> Utilization Rate</label>
+            <label><input type="checkbox" id="dl-success" checked> Success Rate</label>
+            <label><input type="checkbox" id="dl-cost"> Cost Per Voucher</label>
+            <label><input type="checkbox" id="dl-portin"> Port-In Rate</label>
+          </div>
+          <button id="download-btn">Export CSV</button>
+        </div>
+
+      </div><!-- /pha-sidebar-content -->
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+  <script src="script.js"></script>
+
+  <!-- ── How-to overlay ── -->
+  <style>
+    #htu-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.40);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    #htu-overlay.hidden { display: none; }
+    #htu-card {
+      background: #fff; border-radius: 14px;
+      width: 500px; max-width: calc(100vw - 32px); max-height: 88vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.20);
+      font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden;
+    }
+    #htu-header {
+      padding: 22px 22px 14px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    #htu-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #9ca3af; display: block; margin-bottom: 5px;
+    }
+    #htu-title {
+      font-size: 17px; font-weight: 600; color: #111827;
+      margin: 0; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    #htu-close {
+      background: none; border: none; font-size: 22px;
+      color: #9ca3af; cursor: pointer; padding: 0 0 0 12px; line-height: 1;
+    }
+    #htu-close:hover { color: #111827; }
+    #htu-body { padding: 18px 22px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 18px; }
+    .htu-section-label {
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #6b7280; margin: 0 0 9px;
+    }
+    #htu-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+    #htu-list li { font-size: 13px; color: #374151; line-height: 1.6; }
+    #htu-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .htu-chip {
+      font-size: 11.5px; font-weight: 500; color: #1e3a5f;
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 20px; padding: 4px 11px;
+    }
+    #htu-footer { padding: 14px 22px; border-top: 1px solid #f3f4f6; }
+    #htu-dismiss {
+      width: 100%; background: #1e3a5f; color: #fff; border: none;
+      border-radius: 8px; padding: 11px 0; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.03em; transition: background 0.15s;
+    }
+    #htu-dismiss:hover { background: #2d5491; }
+  </style>
+
+  <div id="htu-overlay">
+    <div id="htu-card">
+      <div id="htu-header">
+        <div>
+          <span id="htu-tag">Module 02</span>
+          <h2 id="htu-title">PHA Performance Metrics</h2>
+        </div>
+        <button id="htu-close" aria-label="Close">&times;</button>
+      </div>
+      <div id="htu-body">
+        <div>
+          <p class="htu-section-label">How to Use</p>
+          <ul id="htu-list">
+            <li>Select a <strong>metric</strong> from the dropdown in the top bar — the map redraws to show that indicator across all PHAs.</li>
+            <li>Click any <strong>PHA dot</strong> on the map to load detailed performance data and a multi-year trend chart in the sidebar.</li>
+            <li>Hover over dots for a quick tooltip showing the agency name and selected metric value.</li>
+            <li>Use the <strong>Export CSV</strong> button in the sidebar to download the full PHA dataset.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="htu-section-label">Key Indicators</p>
+          <div id="htu-chips">
+            <span class="htu-chip">Effective Under Lease</span>
+            <span class="htu-chip">Utilization Rate</span>
+            <span class="htu-chip">Success Rate</span>
+            <span class="htu-chip">Cost Per Voucher</span>
+            <span class="htu-chip">Port-In Rate</span>
+          </div>
+        </div>
+      </div>
+      <div id="htu-footer">
+        <button id="htu-dismiss">Got it &mdash; Explore the Map</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const _ov = document.getElementById('htu-overlay');
+    function _dismiss() { _ov.classList.add('hidden'); }
+    document.getElementById('htu-dismiss').addEventListener('click', _dismiss);
+    document.getElementById('htu-close').addEventListener('click', _dismiss);
+    _ov.addEventListener('click', e => { if (e.target === _ov) _dismiss(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') _dismiss(); });
+  </script>
+</body>
+</html>

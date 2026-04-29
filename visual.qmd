@@ -1,0 +1,228 @@
+---
+title: "visual"
+format:
+  html:
+    page-layout: full
+    toc: false
+---
+```{r}
+library(sf)
+library(tidyverse)
+library(dplyr)
+library(knitr)
+library(tidycensus)
+library(sf)
+library(tigris)
+library(scales)
+library(patchwork)
+library(units)
+library(readxl)
+
+```
+
+```{r}
+
+st_layers("HCV.gdb")
+```
+```{r}
+hcv <- st_read(
+  "HCV.gdb",
+  layer = "Housing_Choice_Vouchers_by_Tract",
+  quiet = TRUE
+)
+hcv
+
+```
+```{r}
+plot(st_geometry(hcv), col = "grey70", border = NA)
+
+```
+```{r fig.width=18, fig.height=10, out.width="100%", dpi=150}
+library(ggplot2)
+library(scales)
+
+sf::sf_use_s2(FALSE)
+
+hcv<- st_transform(hcv, 4326)
+centroids <- st_centroid(hcv)
+coords <- st_coordinates(centroids)
+
+hcv <- hcv %>%
+  mutate(
+    lon = coords[,1],
+    lat = coords[,2]
+  ) %>%
+  filter(
+    lon > -125, lon < -66,
+    lat > 24,   lat < 50
+  ) %>%
+  select(-lon, -lat)
+
+
+```
+```{r fig.width=18, fig.height=10, out.width="100%", dpi=300}
+library(scales)
+
+ggplot(hcv) +
+  geom_sf(
+    aes(fill = HCV_PUBLIC),
+    color = NA
+  ) +
+  scale_fill_viridis_c(
+    option = "plasma",   
+    direction = 1,      
+    trans = "sqrt",
+    labels = comma,
+    name = "Public HCV"
+  ) +
+  coord_sf(expand = FALSE) +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(size = 12),
+    legend.text  = element_text(size = 10)
+  )
+
+```
+```{r}
+
+zhvi <- read_csv("Zip_zori_uc_sfrcondomfr_sm_month.csv")
+
+glimpse(zhvi)
+
+```
+```{r}
+
+safmr <- read_excel("fy2025_safmrs_revised.xlsx")
+
+glimpse(safmr)
+
+```
+```{r}
+install.packages("leaflet")
+
+```
+
+
+```{r}
+
+library(sf)
+library(dplyr)
+library(readr)
+library(readxl)
+library(tigris)
+library(leaflet)
+library(scales)
+library(htmltools)
+
+options(tigris_use_cache = TRUE)
+
+
+zcta <- zctas(year = 2022) |> 
+  st_transform(4326)
+
+# ===============================
+# 2. 读取 ZORI（CSV）
+# 文件：Zip_zori_uc_sfrcondomfr_sm_month.csv
+# 字段：RegionName, 2025-12-31
+# ===============================
+zori <- read_csv("Zip_zori_uc_sfrcondomfr_sm_month.csv", show_col_types = FALSE) |>
+  transmute(
+    zip  = sprintf("%05d", as.integer(RegionName)),
+    zori = `2025-12-31`
+  )
+
+
+```
+
+
+```{r}
+names(zcta)
+
+```
+
+```{r}
+safmr <- read_excel("fy2025_safmrs_revised.xlsx") |>
+  transmute(
+    zip        = sprintf("%05d", as.integer(`ZIP\nCode`)),
+    safmr_2br  = `SAFMR\n2BR`
+  )
+
+# ===============================
+# 4. Join 两个表到 ZIP 地图
+# ===============================
+zip_data <- zcta |>
+  left_join(zori,  by = c("ZCTA5CE20" = "zip")) |>
+  left_join(safmr, by = c("ZCTA5CE20" = "zip"))
+
+# ===============================
+# 5. 颜色方案（紫 → 黄）
+# ===============================
+pal_zori <- colorNumeric(
+  palette = "plasma",
+  domain  = zip_data$zori,
+  na.color = "transparent"
+)
+
+pal_safmr <- colorNumeric(
+  palette = "plasma",
+  domain  = zip_data$safmr_2br,
+  na.color = "transparent"
+)
+
+# ===============================
+# 6. Leaflet 可 zoom 地图
+# ===============================
+leaflet(zip_data) |>
+  addProviderTiles("CartoDB.Positron") |>
+
+  # ---- ZORI 图层 ----
+  addPolygons(
+    fillColor   = ~pal_zori(zori),
+    fillOpacity = 0.75,
+    weight      = 0,
+    smoothFactor = 0.2,
+    label = ~HTML(paste0(
+      "<b>ZIP:</b> ", ZCTA5CE20, "<br>",
+      "<b>ZORI (2025-12):</b> $", comma(zori)
+    )),
+    group = "ZORI (Rent Index)"
+  ) |>
+
+  # ---- SAFMR 图层 ----
+  addPolygons(
+    fillColor   = ~pal_safmr(safmr_2br),
+    fillOpacity = 0.75,
+    weight      = 0,
+    smoothFactor = 0.2,
+    label = ~HTML(paste0(
+      "<b>ZIP:</b> ", ZCTA5CE20, "<br>",
+      "<b>SAFMR 2BR:</b> $", comma(safmr_2br)
+    )),
+    group = "SAFMR (2BR)"
+  ) |>
+
+  # ---- 图层切换 ----
+  addLayersControl(
+    overlayGroups = c("ZORI (Rent Index)", "SAFMR (2BR)"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) |>
+
+  # ---- 图例 ----
+  addLegend(
+    pal = pal_zori,
+    values = ~zori,
+    title = "ZORI (2025-12)",
+    labFormat = scales::label_dollar(),
+    group = "ZORI (Rent Index)"
+  ) |>
+
+  addLegend(
+    pal = pal_safmr,
+    values = ~safmr_2br,
+    title = "SAFMR (2BR, FY2025)",
+    labFormat = scales::label_dollar(),
+    group = "SAFMR (2BR)"
+  )
+```
+

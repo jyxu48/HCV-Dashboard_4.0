@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Voucher Gap · Top 25 Metros</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="gap.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #f5f6fa; color: #1a1d2e; font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+    #header { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; background: #fff; border-bottom: 1px solid #e0e4f0; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    #header h1 { font-size: 1.1rem; font-weight: 600; color: #1a1d2e; letter-spacing: .02em; }
+    #header p  { font-size: 0.78rem; color: #7a86a8; margin-top: 2px; }
+    #header-right a { font-size: 0.8rem; color: #3a5ec8; text-decoration: none; border: 1px solid #d0d5e8; padding: 5px 12px; border-radius: 4px; }
+    #header-right a:hover { background: #f0f3ff; border-color: #3a5ec8; }
+
+    #main { max-width: 1100px; margin: 36px auto; padding: 0 24px; }
+    #chart-header { margin-bottom: 28px; }
+    #chart-title { font-size: 1.05rem; font-weight: 700; color: #1a1d2e; text-transform: uppercase; letter-spacing: .06em; line-height: 1.35; max-width: 640px; }
+    #chart-subtitle { font-size: 0.78rem; color: #5a637a; margin-top: 6px; max-width: 700px; line-height: 1.5; }
+
+    #ami-row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+    .ami-label { font-size: 0.7rem; font-weight: 600; letter-spacing: .08em; color: #7a86a8; }
+    .tog-btn { background: #f0f1f7; border: 1px solid #d0d5e8; color: #5a637a; padding: 5px 14px; border-radius: 4px; font-size: 0.78rem; cursor: pointer; transition: all .15s; }
+    .tog-btn:hover  { background: #e8ebf8; color: #1a1d2e; }
+    .tog-btn.active { background: #3a5ec8; border-color: #3a5ec8; color: #fff; font-weight: 600; }
+
+    #chart-card { background: #fff; border: 1px solid #e0e4f0; border-radius: 8px; padding: 28px 28px 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    #chart-wrap { position: relative; width: 100%; }
+
+    #data-note { margin-top: 20px; padding: 16px 20px; background: #f0f3ff; border-left: 3px solid #3a5ec8; border-radius: 0 6px 6px 0; font-size: 0.76rem; color: #5a637a; line-height: 1.6; }
+    #data-note strong { color: #1a1d2e; }
+
+    #tooltip { position: fixed; background: #fff; border: 1px solid #d0d5e8; border-radius: 6px; padding: 10px 14px; font-size: 0.78rem; color: #1a1d2e; pointer-events: none; display: none; z-index: 999; max-width: 240px; line-height: 1.6; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    #tooltip .tt-name  { font-weight: 700; color: #1a1d2e; margin-bottom: 4px; font-size: 0.8rem; }
+    #tooltip .tt-gap   { font-size: 1.1rem; font-weight: 700; color: #3a5ec8; }
+    #tooltip .tt-row   { display: flex; justify-content: space-between; gap: 16px; }
+    #tooltip .tt-label { color: #7a86a8; }
+    #tooltip .tt-val   { font-weight: 600; color: #1a1d2e; }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <div id="header-left">
+      <h1>Voucher Gap Analysis · Top 25 Metros</h1>
+      <p>Weighted Voucher Gap Ratio by Renter Population · HUD PSH &amp; CHAS · 2022</p>
+    </div>
+    <div id="header-right"></div>
+  </header>
+
+  <div id="main">
+
+    <div id="chart-header">
+      <div id="chart-title">
+        The Voucher Gap Ratio, Weighted by Renter Population,<br>
+        in the 25 Largest U.S. Metros
+      </div>
+      <div id="chart-subtitle">
+        Among the 25 most populous metropolitan areas. Weighted Gap = Voucher Gap Ratio × Renter Share,
+        where Gap Ratio = (Eligible Renters − Vouchers) ÷ Total Renters and Renter Share = Renters ÷ Total Households.
+      </div>
+
+      <div id="ami-row">
+        <span class="ami-label">AMI THRESHOLD</span>
+        <button class="tog-btn active" data-ami="30">&lt;30% (ELI)</button>
+        <button class="tog-btn"        data-ami="50">30–50% (VLI)</button>
+        <button class="tog-btn"        data-ami="80">50–80% (LI)</button>
+      </div>
+    </div>
+
+    <div id="chart-card">
+      <div id="chart-wrap">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+
+    <div id="data-note">
+      <strong>Formula:</strong> Weighted Gap = Voucher Gap Ratio × Renter Share — where Gap Ratio = (Eligible Renters − Vouchers Under Lease) ÷ Total Renters, and Renter Share = Total Renters ÷ Total Households. Counties aggregated to MSA using Census CBSA delineations.
+      <strong>Sources:</strong> HUD CHAS 2018–2022 5-year estimates (eligible renters); HUD Picture of Subsidized Households 2022 (vouchers); Census CBSA population estimates 2022.
+    </div>
+
+  </div>
+
+  <div id="tooltip">
+    <div class="tt-name" id="tt-name"></div>
+    <div class="tt-gap"  id="tt-gap"></div>
+    <div style="margin-top:6px">
+      <div class="tt-row"><span class="tt-label">Eligible renters</span><span class="tt-val" id="tt-eli"></span></div>
+      <div class="tt-row"><span class="tt-label">Vouchers</span><span class="tt-val" id="tt-vou"></span></div>
+      <div class="tt-row"><span class="tt-label">Total renters</span><span class="tt-val" id="tt-ren"></span></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script>
+    const AMI_CFG = {
+      30: { wgap: 'wgap30', eli: 'eli30', label: '<30% AMI (ELI)'   },
+      50: { wgap: 'wgap50', eli: 'eli50', label: '30–50% AMI (VLI)' },
+      80: { wgap: 'wgap80', eli: 'eli80', label: '50–80% AMI (LI)'  },
+    };
+    let currentAmi = 30;
+    let allData    = [];
+    let chart      = null;
+
+    function shortName(full) {
+      const parts = full.split(',');
+      const city  = parts[0].split('-')[0].trim();
+      const state = parts[1] ? parts[1].trim().split('-')[0].trim() : '';
+      return state ? `${city}, ${state}` : city;
+    }
+    function fmtN(n)   { return n == null ? 'N/A' : Math.round(n).toLocaleString(); }
+    function fmtPct(v) { return v == null ? 'N/A' : (v * 100).toFixed(2) + '%'; }
+
+    function renderChart() {
+      const cfg  = AMI_CFG[currentAmi];
+      const sorted = [...allData].sort((a, b) => b[cfg.wgap] - a[cfg.wgap]);
+
+      const labels = sorted.map(r => shortName(r.name));
+      const values = sorted.map(r => r[cfg.wgap] != null ? +(r[cfg.wgap] * 100).toFixed(3) : 0);
+
+      const maxVal = Math.max(...values);
+      const colors = values.map(v => {
+        const t = maxVal > 0 ? v / maxVal : 0;
+        return `rgba(${Math.round(40+t*180)},${Math.round(100-t*70)},${Math.round(200-t*160)},0.85)`;
+      });
+
+      if (chart) {
+        chart.data.labels = labels;
+        chart.data.datasets[0].data            = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.options.scales.y.title.text = `Weighted Gap Ratio · ${cfg.label}`;
+        chart.update('active');
+        // update sorted reference for tooltip
+        chart._sortedData = sorted;
+        return;
+      }
+
+      document.getElementById('myChart').style.height = '420px';
+      chart = new Chart(document.getElementById('myChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            data:            values,
+            backgroundColor: colors,
+            borderColor:     'transparent',
+            borderRadius:    3,
+            borderSkipped:   false,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 10 } },
+          plugins: { legend: { display: false }, tooltip: { enabled: false } },
+          scales: {
+            x: {
+              grid:   { color: '#e8eaf2' },
+              ticks:  { color: '#7a86a8', font: { size: 11 }, maxRotation: 38, minRotation: 38 },
+              border: { color: '#d0d5e8' },
+            },
+            y: {
+              grid:  { color: '#e8eaf2' },
+              ticks: { color: '#7a86a8', font: { size: 11 }, callback: v => v + '%' },
+              title: { display: true, text: `Weighted Gap Ratio · ${cfg.label}`, color: '#7a86a8', font: { size: 11 } },
+              border: { color: '#d0d5e8' },
+            }
+          },
+          onHover: (evt, els) => {
+            document.getElementById('myChart').style.cursor = els.length ? 'pointer' : 'default';
+          }
+        }
+      });
+      chart._sortedData = sorted;
+
+      // Custom tooltip
+      const tooltip = document.getElementById('tooltip');
+      document.getElementById('myChart').addEventListener('mousemove', evt => {
+        const pts = chart.getElementsAtEventForMode(evt, 'index', { intersect: false }, false);
+        if (!pts.length) { tooltip.style.display = 'none'; return; }
+        const rec = chart._sortedData[pts[0].index];
+        const c   = AMI_CFG[currentAmi];
+        document.getElementById('tt-name').textContent = rec.name;
+        document.getElementById('tt-gap').textContent  = fmtPct(rec[c.wgap]) + ' weighted gap';
+        document.getElementById('tt-eli').textContent  = fmtN(rec[c.eli]);
+        document.getElementById('tt-vou').textContent  = fmtN(rec.vouchers);
+        document.getElementById('tt-ren').textContent  = fmtN(rec.totalRenters);
+        tooltip.style.display = 'block';
+        tooltip.style.left = Math.min(evt.clientX + 14, window.innerWidth - 260) + 'px';
+        tooltip.style.top  = (evt.clientY - 10) + 'px';
+      });
+      document.getElementById('myChart').addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+    }
+
+    // AMI toggle
+    document.querySelectorAll('#ami-row .tog-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#ami-row .tog-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentAmi = +btn.dataset.ami;
+        renderChart();
+      });
+    });
+
+    fetch('data/metro_gap_chart.json')
+      .then(r => r.json())
+      .then(data => { allData = data; renderChart(); });
+  </script>
+</body>
+</html>

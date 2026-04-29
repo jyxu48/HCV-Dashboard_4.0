@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hidden Barriers in Housing Choice Voucher Usage</title>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <!-- =========================
+       Top Navigation (single-page)
+  ========================== -->
+  <!-- Unified sticky nav bar -->
+  <header class="nav-bar">
+    <div class="nav-brand">
+      <img src="images/hip.png" alt="Platform Logo">
+      <span class="nav-title">Barriers in Housing Choice Voucher Usage</span>
+    </div>
+    <nav class="topnav">
+      <a href="#landing">Home</a>
+      <a href="#background">Background</a>
+      <a href="#definitions">Definitions &amp; Methods</a>
+      <a href="#datasets">References</a>
+    </nav>
+  </header>
+
+  <!-- =========================
+       Main Paper Container
+  ========================== -->
+  <main>
+
+    <!-- ========================= LANDING HERO ========================= -->
+    <section id="landing" class="landing-hero">
+
+      <!-- Left: title + clickable map cards -->
+      <div class="landing-left">
+
+        <div class="landing-headline">
+          <h1 class="landing-title">Barriers in Housing Choice Voucher Usage</h1>
+          <p class="landing-sub">Interactive maps and comparisons linking voucher performance, unmet housing need, and neighborhood opportunity across the United States.</p>
+        </div>
+
+        <div class="map-cards-stack">
+
+          <!-- Column headers -->
+          <div class="card-group-label">Voucher Gap</div>
+          <div class="card-group-label">PHA Performance</div>
+
+          <!-- Row 1: Interactive maps -->
+          <a href="dashboards/hcv/gap.html" target="_blank" rel="noopener" class="map-entry-card">
+            <div class="card-thumb card-thumb-img" style="background-image: url('images/VG_1.PNG');">
+              <div class="thumb-overlay"><span class="thumb-chip">Interactive Map</span></div>
+            </div>
+            <div class="card-info">
+              <span class="card-module-tag">Map</span>
+              <h3 class="card-name">Voucher Gap Ratio Interactive Map</h3>
+              <p class="card-desc">State, county, and tract-level mismatch between housing need and voucher supply.</p>
+              <span class="card-cta">Explore Map &rarr;</span>
+            </div>
+          </a>
+
+          <a href="dashboards/hcv/index.html" target="_blank" rel="noopener" class="map-entry-card">
+            <div class="card-thumb card-thumb-img" style="background-image: url('images/PHA_1.PNG');">
+              <div class="thumb-overlay"><span class="thumb-chip">Interactive Map</span></div>
+            </div>
+            <div class="card-info">
+              <span class="card-module-tag">Map</span>
+              <h3 class="card-name">PHA Performance Interactive Map</h3>
+              <p class="card-desc">PHA-level utilization, success rate, and cost per voucher across the country.</p>
+              <span class="card-cta">Explore Map &rarr;</span>
+            </div>
+          </a>
+
+          <!-- Row 2: Comparison charts -->
+          <a href="dashboards/hcv/metro_chart.html" target="_blank" rel="noopener" class="map-entry-card">
+            <div class="card-thumb card-thumb-img" style="background-image: url('images/VG_2.PNG');">
+              <div class="thumb-overlay"><span class="thumb-chip">Comparison</span></div>
+            </div>
+            <div class="card-info">
+              <span class="card-module-tag">Charts</span>
+              <h3 class="card-name">Compare Voucher Gap Ratios Across Cities</h3>
+              <p class="card-desc">Weighted gap ratios across the 25 largest metros by AMI and demographic group.</p>
+              <span class="card-cta">View Charts &rarr;</span>
+            </div>
+          </a>
+
+          <a href="dashboards/hcv/pha_charts.html" target="_blank" rel="noopener" class="map-entry-card">
+            <div class="card-thumb card-thumb-img" style="background-image: url('images/PHA_2.PNG');">
+              <div class="thumb-overlay"><span class="thumb-chip">Comparison</span></div>
+            </div>
+            <div class="card-info">
+              <span class="card-module-tag">Charts</span>
+              <h3 class="card-name">Compare PHA Performances</h3>
+              <p class="card-desc">Top and bottom PHAs by utilization, success rate, cost per voucher, and reserves.</p>
+              <span class="card-cta">View Charts &rarr;</span>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Right: background image -->
+      <div class="landing-right">
+        <img src="images/Landing_page_Image_2.jpg" alt="Housing in America" class="landing-bg-img">
+        <p class="landing-img-credit">Illustration by Tim Peacock, taken from <em>40 Big Ideas to Make New York City More Affordable</em>, The New York Times, 2025.</p>
+      </div>
+
+    </section>
+    <!-- ========================= END LANDING HERO ========================= -->
+
+    <div class="container">
+
+      <section id="background" class="section intro-copy" aria-labelledby="intro-title">
+        <h2 id="intro-title">Background</h2>
+
+        <h3>What This Platform Does</h3>
+        <p>This project assembles a national, multi-scale dataset linking Housing Choice Voucher data with local housing and community conditions across multiple geographic levels, including national, state, county, census tract, ZIP code, and PHA contexts where available. We bring these sources together in a single platform and build an interactive map so users can explore how voucher performance and local conditions vary across places.</p>
+        <p>The platform is designed as both a data summary and a research tool: it helps connect administrative HCV indicators to the local environments that shape whether households can actually use assistance, including rental market pressure, neighborhood context, and the geography of housing opportunity.</p>
+
+        <h3>Why HCV Matters</h3>
+        <p>The Housing Choice Voucher (HCV) program is one of the most important rental subsidy programs in the United States. Instead of assigning a public housing unit directly, it helps eligible low-income households rent in the private market: families typically contribute about 30% of adjusted income toward rent and utilities, while the subsidy covers the remainder within local payment standards. Its purpose is not only to reduce rent burden, but to expand access to safer, more stable, and more opportunity-rich housing.</p>
+        <p>Research shows that vouchers can reduce homelessness, housing instability, and overcrowding, while improving a range of household and child outcomes. But the central challenge is not only whether assistance exists. It is whether that assistance can actually be used. Demand far exceeds supply, waiting lists are often closed for long periods, and even after a family receives a voucher, success depends heavily on local rental market conditions, PHA administration, landlord participation, and whether payment standards make units feasible in the neighborhoods families are trying to reach.</p>
+        <p>In other words, receiving a voucher does not automatically mean that a household will sign a lease, move into a subsidized unit, or gain meaningful access to opportunity.</p>
+
+        <h3>Why Start from the User Perspective</h3>
+        <p>There is already a substantial literature on affordability, segregation, voucher design, and landlord participation. This project starts from a different question: what does the HCV process look like from the perspective of the low-income households who need to use it? Rather than treating voucher issuance as the endpoint, we follow the journey from application to lease-up and move-in.</p>
+        <ol>
+          <li><strong>Entering the system:</strong> many families face closed waiting lists, lotteries, and years of delay before assistance becomes available.</li>
+          <li><strong>After issuance:</strong> the voucher starts a short countdown, and households must search under intense time pressure.</li>
+          <li><strong>Searching for a unit:</strong> voucher holders may encounter landlord refusal, limited listings, and administrative complexity.</li>
+          <li><strong>Trying to close a lease:</strong> payment standards, inspections, and approval timelines can cause otherwise viable units to fall through.</li>
+          <li><strong>After lease-up:</strong> where a family ultimately rents shapes whether the voucher leads only to short-term stability or also to meaningful access to opportunity.</li>
+          <li><strong>Throughout the process:</strong> information costs, compliance burden, repeated rejection, and uncertainty create hidden barriers that are easy to miss in aggregate statistics.</li>
+        </ol>
+        <p><strong>In short:</strong> Housing Choice Vouchers are designed to expand housing choice for low-income households, but in practice, access is shaped by long waitlists, administrative burden, landlord participation, rent constraints, and unequal neighborhood opportunity.</p>
+
+      </section>
+
+
+<!-- ========================= -->
+      <section id="explore-map" class="section">
+        <h2>PHA Level Performance Metrics</h2>
+        <p class="lead">This national interactive map links PHA-level HCV administrative indicators with the broader geography of housing need and local conditions, offering a first view of where formal assistance translates into real lease-up capacity.</p>
+
+        <!-- HCV Performance Dashboard -->
+        <section id="hcv-dashboard" class="subsection">
+          <div class="opportunity-copy-block" style="margin-top:40px;">
+            <h4>What the PHA Performance Pattern Reveals</h4>
+            <p>At the PHA level, the performance patterns reveal a system that is broadly operating at or near full capacity, but with significant underlying heterogeneity and structural inefficiencies. Median utilization rates hover at approximately 100%, with even the lower quartile above 99%, indicating that most housing authorities are successfully leasing nearly all available vouchers. This is reinforced by high success rates (median ≈ 97%), suggesting that once vouchers are issued, they are highly likely to be converted into active leases. However, the presence of utilization rates exceeding 100% and extreme maximum values signals measurement inconsistencies, likely driven by portability dynamics or reporting discrepancies, rather than true over-utilization.</p>
+            <p style="margin-top:20px;">At the same time, the distribution of issued-but-not-leased vouchers (mean ≈ 133, with a long right tail) highlights persistent frictions in voucher absorption for a subset of PHAs, pointing to localized market constraints such as landlord participation or housing availability. Financial indicators further underscore disparities: while median reserve balances are substantial (~$140K), the wide range up to over $1.3 million suggests uneven fiscal capacity across agencies. Similarly, cost per voucher varies dramatically, with a heavy right tail, indicating that some PHAs operate in significantly higher-cost environments or face inefficiencies in program delivery.</p>
+            <p style="margin-top:20px;">Portability plays a relatively minor role for most PHAs (median port-in rate = 0), but the existence of high outliers implies that certain jurisdictions function as net receivers in regional housing markets, potentially inflating their apparent utilization. Overall, the data suggests a system that is efficient on average but uneven in practice, where high aggregate performance masks localized bottlenecks, fiscal disparities, and measurement distortions driven by inter-jurisdictional dynamics.</p>
+          </div>
+
+        </section>
+      </section>
+
+      <!-- Voucher Gap Ratio -->
+      <section id="voucher-gap" class="section">
+        <h2>Voucher Gap Ratio</h2>
+        <p class="lead">This module maps where eligible renters face the largest mismatch between housing need, voucher supply, and access to assistance — at the state, county, and census tract level.</p>
+
+        <section class="subsection">
+          <div class="opportunity-copy-block" style="margin-top:40px;">
+            <h4>What the Voucher Gap Ratio Reveals</h4>
+
+            <h3>Voucher Gap Ratio</h3>
+            <p style="margin-top:12px;">The raw voucher gap ratio reveals a stark mismatch between the number of housing vouchers currently in use and the number of households eligible under a universal voucher framework. The highest gaps appear in large and fast-growing states — California, Texas, New York, Florida, and much of the Midwest (e.g., Illinois, Michigan, Ohio) — where high housing costs and large renter populations drive substantial unmet demand. However, this raw measure is heavily influenced by scale: states with larger populations naturally exhibit larger absolute gaps. As a result, while the raw ratio highlights where the most households are underserved, it does not fully capture relative need or intensity of shortage across smaller states.</p>
+
+            <h3 style="margin-top:28px;">Renter-Weighted Gap Ratio</h3>
+            <p style="margin-top:12px;">When the gap is normalized by the renter population, a different geography of vulnerability emerges. Smaller and mid-sized states, particularly in the Mountain West (e.g., Wyoming, Montana) and parts of the Midwest and South, show disproportionately high gaps relative to their renter base. This indicates that even though these states may have fewer renters overall, a much larger share of their renter population lacks access to vouchers. In contrast, large coastal states remain important in absolute terms but appear less extreme once adjusted for population. This measure reveals that housing insecurity is not just an urban or large-state problem — it is deeply structural across smaller housing markets as well.</p>
+
+            <h3 style="margin-top:28px;">Children-Weighted Gap Ratio</h3>
+            <p style="margin-top:12px;">Weighting the gap by households with children highlights a more concentrated and policy-relevant vulnerability pattern. The highest gaps cluster in the South and parts of the Midwest, particularly Texas, Louisiana, Mississippi, Georgia, and Oklahoma. These regions combine higher child poverty rates with limited voucher coverage, suggesting that families with children face disproportionately high barriers to stable housing. Compared to the renter-weighted map, the spatial pattern becomes more regionally concentrated, emphasizing that housing assistance gaps intersect strongly with intergenerational disadvantage.</p>
+
+            <h3 style="margin-top:28px;">Elderly-Weighted Gap Ratio</h3>
+            <p style="margin-top:12px;">When weighted by elderly households, vulnerability shifts somewhat toward states with aging populations and fixed-income renters, including parts of the Midwest, Northeast, and select Southern states. The gap here reflects the structural challenge of housing affordability for seniors, who are less able to adjust income in response to rising rents. While the overall intensity of gaps may appear lower than for children, the implications are significant: even moderate gaps translate into high risk of housing instability for elderly populations due to income rigidity and longer program reliance.</p>
+
+            <h3 style="margin-top:28px;">Households of Color-Weighted Gap Ratio</h3>
+            <p style="margin-top:12px;">Weighting by households of color reveals a distinctly uneven and inequitable geography. The largest gaps are concentrated in California, Texas, parts of the Southeast, and select Midwestern states, where large populations of households of color coincide with structural barriers in housing markets. This pattern reflects not only income disparities but also historical and ongoing discrimination, segregation, and differential access to housing assistance programs. Compared to the unweighted map, the disparities become more pronounced, underscoring that voucher shortages disproportionately affect racially marginalized communities.</p>
+
+            <h3 style="margin-top:28px;">Poverty-Weighted Gap Ratio</h3>
+            <p style="margin-top:12px;">The poverty-weighted map produces the most policy-critical insight: the highest gaps are concentrated in Southern states (e.g., Mississippi, Louisiana, Alabama), parts of Texas, and sections of the Midwest, where poverty rates are highest relative to housing support. This indicates that the areas with the greatest need for housing assistance are also those where the voucher system falls shortest. Unlike the raw map, which highlights scale, this measure highlights depth of deprivation — revealing a clear misalignment between program reach and need.</p>
+
+            <h3 style="margin-top:28px;">Effect of Changing AMI Thresholds</h3>
+            <p style="margin-top:12px;">Expanding eligibility from 30% AMI to 50% AMI and beyond systematically reshapes the geography of the gap:</p>
+            <ul style="margin-top:14px; padding-left:22px; line-height:2;">
+              <li><strong>At 30% AMI:</strong> The gap is most concentrated among the poorest households, with strong clustering in the South and high-poverty regions. This scenario highlights deepest need and extreme deprivation.</li>
+              <li style="margin-top:10px;"><strong>At 50% AMI:</strong> The gap expands significantly in large states and metropolitan regions, including California, Texas, and New York. This reflects the inclusion of working-class households who are cost-burdened but not extremely poor, broadening the scope of housing insecurity.</li>
+              <li style="margin-top:10px;"><strong>At 80% AMI and up:</strong> The gap becomes more geographically diffuse, spreading into higher-cost housing markets nationwide, including suburban and coastal regions. This demonstrates that housing affordability challenges extend well beyond traditionally defined low-income groups, particularly in tight rental markets.</li>
+            </ul>
+          </div>
+
+        </section>
+      </section>
+
+
+
+
+      <!-- Definitions & Methods -->
+      <section id="definitions" class="section">
+        <h2>Definitions &amp; Methods</h2>
+
+        <h3>PHA Performance Indicator Definitions</h3>
+        <div class="indicator-defs" style="margin-top:16px;">
+          <table class="indicator-table">
+            <thead>
+              <tr>
+                <th>Indicator</th>
+                <th>Definition</th>
+                <th>Calculation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Utilization Rate</td>
+                <td>Measures what share of a housing authority's voucher budget is currently leased up in vouchers.</td>
+                <td>Yearly mean of (Vouchers Under Lease / Total Vouchers)</td>
+              </tr>
+              <tr>
+                <td>Success Rate</td>
+                <td>The percent of vouchers an agency has issued to families in a year that result in an actual lease and assistance contract with a landlord.</td>
+                <td>Yearly mean of (Vouchers Under Lease / (Vouchers Under Lease + New Vouchers Issued but not under HAP contract))</td>
+              </tr>
+              <tr>
+                <td>Cost Per Voucher</td>
+                <td>Average monthly HAP expenditure per leased voucher, covering all voucher program types including Litigation, Mainstream, Homeownership, MTW, Family Unification, NED, Portable, HOPE VI, Tenant Protection, VASH, DHAP-HCV, and FSS Escrow.</td>
+                <td>Yearly mean of (Sum of all monthly HAP expenses / Vouchers Under Lease)</td>
+              </tr>
+              <tr>
+                <td>Port-In Rate</td>
+                <td>Share of leased vouchers that are portable vouchers administered by the PHA on behalf of another agency.</td>
+                <td>Yearly mean of (Portable Vouchers Administered (Port-In) / Vouchers Under Lease)</td>
+              </tr>
+              <tr>
+                <td>Voucher Gap Ratio</td>
+                <td>Mismatch between housing need and voucher supply at the state, county, and tract level.</td>
+                <td>Actual Vouchers / Potential Vouchers × Renter Population weight</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <section id="datasets" class="section">
+        <h2>Datasets &amp; References</h2>
+        <p>This platform combines national HCV administrative records with local housing market and neighborhood indicators to support analysis across multiple geographic scales.</p>
+
+        <h3>Primary Data Sources</h3>
+        <ul>
+          <li><strong>HUD Voucher Management System (VMS)</strong> — PHA-level monthly leasing, utilization, issuance, and financial indicators</li>
+          <li><strong>HUD Picture of Subsidized Households</strong> — National, state, county, census tract, and PHA-level subsidized housing counts</li>
+          <li><strong>HUD Fair Market Rents (FMR) / Small Area FMR (SAFMR)</strong> — Annual rent benchmarks used to understand local payment constraints</li>
+          <li><strong>American Community Survey (ACS)</strong> — Renter population, poverty, rent burden, and demographic context</li>
+          <li><strong>Zillow ZORI</strong> — Local market rent pressure and private rental trends</li>
+        </ul>
+      </section>
+
+      <footer class="footer">
+        <p class="muted">© <span id="yearNow"></span> Housing Equity Platform · Built for research use.</p>
+      </footer>
+
+    </div><!-- /.container -->
+
+  </main>
+
+  <script>
+    // Tiny UX: footer year.
+    document.getElementById("yearNow").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+
+</html>

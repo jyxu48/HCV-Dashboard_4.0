@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>PHA Performance · Top &amp; Bottom 5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f6fa;
+      color: #1a1d2e;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────────────── */
+    #header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: #ffffff;
+      border-bottom: 1px solid #e0e4f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    #header h1 { font-size: 1.1rem; font-weight: 600; color: #1a1d2e; letter-spacing: .02em; }
+    #header p  { font-size: 0.78rem; color: #5a637a; margin-top: 2px; }
+    .nav-links  { display: flex; gap: 10px; }
+    .nav-links a {
+      font-size: 0.8rem; color: #3a5ec8; text-decoration: none;
+      border: 1px solid #d0d5e8; padding: 5px 12px; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .nav-links a:hover { background: #e0e4f0; }
+
+    /* ── Filter bar ─────────────────────────────────────────────────────────── */
+    #filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 10px 28px;
+      background: #f8f9fc;
+      border-bottom: 1px solid #e0e4f0;
+      font-size: 0.76rem;
+      color: #7a86a8;
+    }
+    #filter-bar label { display: flex; align-items: center; gap: 8px; }
+    #filter-bar select, #filter-bar input {
+      background: #f5f6fa; border: 1px solid #d0d5e8; color: #1a1d2e;
+      padding: 4px 8px; border-radius: 4px; font-size: 0.76rem;
+    }
+    #filter-bar span { color: #5a637a; }
+
+    /* ── Main grid ───────────────────────────────────────────────────────────── */
+    #main {
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ── Indicator card ──────────────────────────────────────────────────────── */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e0e4f0;
+      border-radius: 8px;
+      padding: 20px 22px;
+    }
+    .card-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #7a86a8;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 0.72rem;
+      color: #5a637a;
+      margin-bottom: 16px;
+    }
+    .chart-legend {
+      display: flex;
+      gap: 18px;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: .04em;
+      margin-bottom: 10px;
+    }
+    .leg-top { color: #3a9e7a; }
+    .leg-bot { color: #c05050; }
+    .chart-wrap { position: relative; }
+
+    /* ── Tooltip ─────────────────────────────────────────────────────────────── */
+    #tooltip {
+      position: fixed;
+      background: #ffffff;
+      border: 1px solid #d0d5e8;
+      border-radius: 6px;
+      padding: 9px 13px;
+      font-size: 0.76rem;
+      color: #1a1d2e;
+      pointer-events: none;
+      display: none;
+      z-index: 999;
+      max-width: 260px;
+      line-height: 1.6;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    #tooltip .tt-name  { font-weight: 700; color: #1a1d2e; margin-bottom: 3px; font-size: 0.78rem; }
+    #tooltip .tt-val   { font-size: 1rem; font-weight: 700; color: #3a5ec8; }
+    #tooltip .tt-sub   { color: #5a637a; font-size: 0.72rem; }
+
+    /* ── Footer note ─────────────────────────────────────────────────────────── */
+    #page-note {
+      max-width: 1200px;
+      margin: 0 auto 32px;
+      padding: 0 24px;
+      font-size: 0.72rem;
+      color: #5a637a;
+      line-height: 1.6;
+    }
+    #page-note strong { color: #1a1d2e; }
+  </style>
+</head>
+<body>
+
+<header id="header">
+  <div>
+    <h1>PHA Performance · Top &amp; Bottom 5</h1>
+    <p>Housing Choice Voucher Efficiency Indicators · HUD VMS 2025 · PHAs with ≥100 vouchers</p>
+  </div>
+</header>
+
+<div id="filter-bar">
+  <label>
+    Min. vouchers
+    <input type="number" id="min-vouchers" value="100" min="0" max="5000" step="50">
+  </label>
+  <label>
+    Year
+    <select id="year-select">
+      <option value="2025" selected>2025</option>
+      <option value="2024">2024</option>
+      <option value="2023">2023</option>
+      <option value="2022">2022</option>
+    </select>
+  </label>
+  <span id="pha-count"></span>
+</div>
+
+<div id="main">
+
+  <!-- Effective Under Lease -->
+  <div class="card" id="card-eff">
+    <div class="card-title">Effective Under Lease</div>
+    <div class="card-desc">Vouchers Effectively Under Lease ÷ Total Vouchers</div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
+    <div class="chart-wrap"><canvas id="eff-chart"></canvas></div>
+  </div>
+
+  <!-- Utilization Rate -->
+  <div class="card" id="card-util">
+    <div class="card-title">Utilization Rate</div>
+    <div class="card-desc">Vouchers Under Lease ÷ Total Vouchers</div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
+    <div class="chart-wrap"><canvas id="util-chart"></canvas></div>
+  </div>
+
+  <!-- Success Rate -->
+  <div class="card" id="card-succ">
+    <div class="card-title">Success Rate</div>
+    <div class="card-desc">Successfully Leased Vouchers ÷ Total Vouchers Issued</div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
+    <div class="chart-wrap"><canvas id="succ-chart"></canvas></div>
+  </div>
+
+  <!-- Cost Per Voucher -->
+  <div class="card" id="card-cost">
+    <div class="card-title">Cost Per Voucher ($/month)</div>
+    <div class="card-desc">Total HAP Expenditure ÷ Vouchers Under Lease</div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Lowest Cost</span><span class="leg-bot">▪ Bottom 5 Highest Cost</span></div>
+    <div class="chart-wrap"><canvas id="cost-chart"></canvas></div>
+  </div>
+
+  <!-- Reserve Balance -->
+  <div class="card" id="card-res">
+    <div class="card-title">Reserve Balance ($)</div>
+    <div class="card-desc">Cumulative Unexpended Net Program Reserves (UNP − RNP)</div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest Reserve</span><span class="leg-bot">▪ Bottom 5 Most Deficit</span></div>
+    <div class="chart-wrap"><canvas id="res-chart"></canvas></div>
+  </div>
+
+  <!-- Port-In Rate -->
+  <div class="card" id="card-port">
+    <div class="card-title">Port-In Rate</div>
+    <div class="card-desc">Port-In Vouchers ÷ Total Vouchers Under Lease</div>
+    <div class="chart-legend"><span class="leg-top">▪ Top 5 Highest</span><span class="leg-bot">▪ Bottom 5 Lowest</span></div>
+    <div class="chart-wrap"><canvas id="port-chart"></canvas></div>
+  </div>
+
+</div>
+
+<div id="page-note">
+  <strong>Source:</strong> HUD Voucher Management System (VMS), 2025 (latest available).
+  PHAs filtered to ≥ 100 vouchers to exclude very small agencies.
+  Utilization and success rates capped at 150% to exclude data anomalies.
+  Reserve balance excludes outliers beyond ±$50M.
+</div>
+
+<div id="tooltip">
+  <div class="tt-name" id="tt-name"></div>
+  <div class="tt-val"  id="tt-val"></div>
+  <div class="tt-sub"  id="tt-sub"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+
+const INDICATORS = [
+  {
+    key:     'effective_under_lease',
+    chartId: 'eff-chart',
+    fmt:     v => (v * 100).toFixed(1) + '%',
+    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:  v => v > 0.4 && v < 1.5,
+    topDir:  'desc',
+    xFmt:    v => (v * 100).toFixed(0) + '%',
+  },
+  {
+    key:     'utilization_rate',
+    chartId: 'util-chart',
+    fmt:     v => (v * 100).toFixed(1) + '%',
+    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:  v => v > 0.4 && v < 1.5,
+    topDir:  'desc',
+    xFmt:    v => (v * 100).toFixed(0) + '%',
+  },
+  {
+    key:     'success_rate',
+    chartId: 'succ-chart',
+    fmt:     v => (v * 100).toFixed(1) + '%',
+    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:  v => v > 0.2 && v <= 1.001,
+    topDir:  'desc',
+    xFmt:    v => (v * 100).toFixed(0) + '%',
+  },
+  {
+    key:     'cost_per_voucher',
+    chartId: 'cost-chart',
+    fmt:     v => '$' + v.toFixed(0),
+    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:  v => v > 50 && v < 4000,
+    topDir:  'asc',
+    xFmt:    v => '$' + v.toFixed(0),
+  },
+  {
+    key:     'reserve_balance',
+    chartId: 'res-chart',
+    fmt:     v => (v >= 0 ? '+' : '') + '$' + Math.abs(v/1000).toFixed(0) + 'k',
+    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:  v => v > -50_000_000 && v < 50_000_000,
+    topDir:  'desc',
+    xFmt:    v => '$' + (v/1000).toFixed(0) + 'k',
+  },
+  {
+    key:     'port_in_rate',
+    chartId: 'port-chart',
+    fmt:     v => (v * 100).toFixed(1) + '%',
+    sub:     r => `${r.total_vouchers?.toFixed(0)} vouchers`,
+    filter:  v => v >= 0 && v <= 1,
+    topDir:  'desc',
+    xFmt:    v => (v * 100).toFixed(0) + '%',
+  },
+];
+
+let charts  = {};
+let allRows = [];   // all years combined
+
+// ── Load data ─────────────────────────────────────────────────────────────────
+fetch('data/pha_master_timeseries.json')
+  .then(r => r.json())
+  .then(ts => {
+    // ts is { pha_code: [{year, pha_name, effective_under_lease, ...}] }
+    // Flatten into allRows
+    Object.values(ts).forEach(records => {
+      records.forEach(row => allRows.push(row));
+    });
+    buildAll();
+  });
+
+function buildAll() {
+  const minV = +document.getElementById('min-vouchers').value || 0;
+  const yr   = document.getElementById('year-select').value;
+
+  const pool = allRows.filter(p =>
+    String(p.year) === yr &&
+    (p.total_vouchers ?? 0) >= minV
+  );
+  document.getElementById('pha-count').textContent = `${pool.length} PHAs`;
+  INDICATORS.forEach(ind => buildPair(ind, pool));
+}
+
+// ── Build combined top+bottom chart ─────────────────────────────────────────
+function buildPair(ind, pool) {
+  const valid = pool
+    .filter(p => p[ind.key] != null && ind.filter(p[ind.key]))
+    .map(p => ({ ...p, _v: p[ind.key] }));
+
+  const asc  = [...valid].sort((a,b) => a._v - b._v);
+  const desc = [...valid].sort((a,b) => b._v - a._v);
+
+  const top5 = (ind.topDir === 'desc' ? desc : asc).slice(0, 5);
+  const bot5 = (ind.topDir === 'desc' ? asc  : desc).slice(0, 5);
+
+  // Combine and sort highest → lowest for display (shared scale)
+  const topCodes = new Set(top5.map(r => r.pha_code));
+  const combined = [...top5, ...bot5].sort((a,b) => b._v - a._v);
+  const colors   = combined.map(r => topCodes.has(r.pha_code) ? '#3a9e7acc' : '#c05050cc');
+
+  renderCombined(ind.chartId, combined, colors, ind);
+}
+
+function shortPha(name) {
+  return name
+    .replace(/Housing Authority of (the )?/i, 'HA ')
+    .replace(/ Housing Authority$/i, ' HA')
+    .replace(/ Housing Commission$/i, ' HC')
+    .replace(/ Redevelopment & Hsg Authority$/i, ' RRHA')
+    .replace(/ Authority$/i, '')
+    .trim()
+    .slice(0, 32);
+}
+
+function renderCombined(canvasId, records, colors, ind) {
+  if (charts[canvasId]) { charts[canvasId].destroy(); delete charts[canvasId]; }
+
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+
+  const labels = records.map(r => shortPha(r.pha_name));
+  const values = records.map(r => r._v);
+
+  const ctx = canvas.getContext('2d');
+  charts[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data:            values,
+        backgroundColor: colors,
+        borderColor:     'transparent',
+        borderRadius:    3,
+        borderSkipped:   false,
+      }]
+    },
+    options: {
+      indexAxis:  'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { right: 8 } },
+      plugins: {
+        legend:  { display: false },
+        tooltip: { enabled: false },
+      },
+      scales: {
+        x: {
+          grid:   { color: '#f0f1f7' },
+          ticks:  { color: '#7a86a8', font: { size: 10 }, callback: v => ind.xFmt(v) },
+          border: { color: '#e0e4f0' },
+        },
+        y: {
+          grid:   { display: false },
+          ticks:  { color: '#5a637a', font: { size: 10.5 } },
+          border: { color: '#e0e4f0' },
+        }
+      },
+      onHover: (evt, els) => {
+        canvas.style.cursor = els.length ? 'pointer' : 'default';
+      }
+    }
+  });
+  canvas.style.height = (records.length * 40 + 20) + 'px';
+
+  // Tooltip
+  const tooltip = document.getElementById('tooltip');
+  canvas.addEventListener('mousemove', evt => {
+    const pts = charts[canvasId].getElementsAtEventForMode(evt, 'index', { intersect: false }, false);
+    if (!pts.length) { tooltip.style.display = 'none'; return; }
+    const rec = records[pts[0].index];
+    document.getElementById('tt-name').textContent = rec.pha_name;
+    document.getElementById('tt-val').textContent  = ind.fmt(rec._v);
+    document.getElementById('tt-sub').textContent  = ind.sub(rec) + `  ·  ${rec.year}`;
+    tooltip.style.display = 'block';
+    tooltip.style.left = Math.min(evt.clientX + 14, window.innerWidth - 270) + 'px';
+    tooltip.style.top  = (evt.clientY - 10) + 'px';
+  });
+  canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+}
+
+// ── Controls ─────────────────────────────────────────────────────────────────
+document.getElementById('min-vouchers').addEventListener('change', buildAll);
+document.getElementById('year-select').addEventListener('change', buildAll);
+
+</script>
+</body>
+</html>

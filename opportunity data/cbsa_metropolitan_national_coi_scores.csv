@@ -1,0 +1,9 @@
+series,metric,label,score,tract_rows_used,weight_sum
+renter_weighted_metro_national,renter_weighted_metro_national_coi_idx,Opportunity Index,48.27358741252271,70040,39341068.0
+hcv_weighted_metro_national,hcv_weighted_metro_national_coi_idx,Opportunity Index,36.33962266446483,59135,2465816.0
+renter_weighted_metro_national,renter_weighted_metro_national_coi_edu,Education Domain,49.706724002439806,70030,39340884.0
+hcv_weighted_metro_national,hcv_weighted_metro_national_coi_edu,Education Domain,37.982175032879645,59134,2465811.0
+renter_weighted_metro_national,renter_weighted_metro_national_coi_health_env,Health & Environment Domain,54.71371354229631,70045,39341068.0
+hcv_weighted_metro_national,hcv_weighted_metro_national_coi_health_env,Health & Environment Domain,54.47945345475899,59135,2465816.0
+renter_weighted_metro_national,renter_weighted_metro_national_coi_eco,Social & Economic Domain,46.36429200904782,69655,39335425.0
+hcv_weighted_metro_national,hcv_weighted_metro_national_coi_eco,Social & Economic Domain,33.88882113375836,59107,2464758.0

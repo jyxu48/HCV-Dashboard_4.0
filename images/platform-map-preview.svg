@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="620" viewBox="0 0 1100 620">
+  <rect width="1100" height="620" fill="#d9e6ee"/>
+  <g opacity="0.95">
+    <path d="M0 0h835v620H0z" fill="#8fb6cc"/>
+    <path d="M20 55 90 18l84 43 83-24 85 68 72-40 118 38 71-60 90 40 85-29 57 72v494H0V120z" fill="#477da0" opacity="0.55"/>
+    <path d="M0 215 98 180l95 32 108-56 64 76 128-21 92 48 96-68 154 36v393H0z" fill="#2f668d" opacity="0.46"/>
+    <path d="M0 390 62 348l105 20 83-42 126 44 70-66 138 56 86-38 165 62v236H0z" fill="#cbd9e1" opacity="0.75"/>
+  </g>
+  <g fill="none" stroke="#e8eef2" stroke-width="1" opacity="0.72">
+    <path d="M15 94h805M15 162h805M15 230h805M15 298h805M15 366h805M15 434h805M15 502h805"/>
+    <path d="M70 0v620M145 0v620M220 0v620M295 0v620M370 0v620M445 0v620M520 0v620M595 0v620M670 0v620M745 0v620"/>
+  </g>
+  <g opacity="0.72">
+    <circle cx="105" cy="114" r="5" fill="#56697a"/>
+    <circle cx="162" cy="212" r="6" fill="#56697a"/>
+    <circle cx="254" cy="180" r="4" fill="#56697a"/>
+    <circle cx="330" cy="266" r="5" fill="#56697a"/>
+    <circle cx="414" cy="150" r="6" fill="#56697a"/>
+    <circle cx="508" cy="240" r="5" fill="#56697a"/>
+    <circle cx="592" cy="132" r="4" fill="#56697a"/>
+    <circle cx="660" cy="306" r="6" fill="#56697a"/>
+    <circle cx="724" cy="208" r="5" fill="#56697a"/>
+    <circle cx="118" cy="390" r="5" fill="#56697a"/>
+    <circle cx="236" cy="472" r="6" fill="#56697a"/>
+    <circle cx="398" cy="428" r="5" fill="#56697a"/>
+    <circle cx="560" cy="514" r="4" fill="#56697a"/>
+    <circle cx="708" cy="448" r="6" fill="#56697a"/>
+  </g>
+  <rect x="18" y="18" width="560" height="64" fill="#2bb4ad"/>
+  <text x="34" y="42" font-family="Montserrat, Arial, sans-serif" font-size="12" font-weight="700" fill="#073b45">CURRENT DATASET</text>
+  <text x="34" y="61" font-family="Montserrat, Arial, sans-serif" font-size="18" font-weight="700" fill="#062b33">Child Opportunity Index (COI3.0)</text>
+  <text x="34" y="76" font-family="Lato, Arial, sans-serif" font-size="12" fill="#073b45">Disparities in Access to Opportunities</text>
+  <rect x="835" y="0" width="265" height="620" fill="#f7fafc"/>
+  <rect x="835" y="0" width="265" height="94" fill="#30b8ae"/>
+  <rect x="852" y="40" width="120" height="28" fill="#fff"/>
+  <rect x="988" y="40" width="88" height="28" fill="#1f9f99" opacity="0.55"/>
+  <rect x="852" y="82" width="224" height="30" fill="#fff"/>
+  <text x="852" y="145" font-family="Montserrat, Arial, sans-serif" font-size="12" font-weight="700" fill="#111827">SELECTED GEOGRAPHY</text>
+  <text x="852" y="168" font-family="Montserrat, Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">New York County, NY</text>
+  <text x="852" y="193" font-family="Montserrat, Arial, sans-serif" font-size="12" font-weight="700" fill="#111827">NATIONAL COMPARISON</text>
+  <line x1="852" y1="224" x2="1076" y2="224" stroke="#e5e7eb"/>
+  <circle cx="1064" cy="224" r="6" fill="#cf3350"/>
+  <text x="1048" y="214" font-family="Montserrat, Arial, sans-serif" font-size="22" font-weight="700" fill="#111827">96</text>
+  <g font-family="Lato, Arial, sans-serif" font-size="12" fill="#344054">
+    <text x="852" y="284">Nationally normed Child Opportunity Scores</text>
+    <text x="852" y="302">from 1 to 100 for selected geographies.</text>
+  </g>
+  <line x1="852" y1="338" x2="1076" y2="338" stroke="#e5e7eb"/>
+  <text x="852" y="364" font-family="Montserrat, Arial, sans-serif" font-size="12" font-weight="700" fill="#111827">HCV OVERLAY</text>
+  <rect x="852" y="392" width="224" height="34" fill="#fff" stroke="#d6dee6"/>
+  <rect x="852" y="452" width="224" height="60" fill="#30b8ae"/>
+  <text x="868" y="488" font-family="Montserrat, Arial, sans-serif" font-size="13" font-weight="700" fill="#073b45">DATASETS</text>
+  <rect x="18" y="570" width="230" height="28" fill="#ffffff" opacity="0.9"/>
+  <g font-family="Lato, Arial, sans-serif" font-size="10" fill="#111827">
+    <text x="34" y="588">&lt; 20   20 to 40   40 to 60   60 to 80   &gt;= 80</text>
+  </g>
+</svg>

@@ -90,7 +90,7 @@ let lockedCbsaCode = null;
 
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v11',
+  style: 'mapbox://styles/mapbox/light-v11',
   center: [-98, 39],
   zoom: 3.1,
   minZoom: 2.5,
@@ -164,7 +164,7 @@ function addCbsaLayers(geojson) {
     type: 'line',
     source: 'cbsa',
     paint: {
-      'line-color': '#5b8dee',
+      'line-color': '#2563eb',
       'line-width': ['case', ['boolean', ['feature-state', 'selected'], false], 2.1, 0]
     }
   });
@@ -376,8 +376,8 @@ function renderComparisonChart(props) {
         {
           label: meta.hcvLabel,
           data: [toNumber(props[meta.hcvField]), toNumber(national[meta.hcvField])],
-          backgroundColor: '#5b8dee',
-          borderColor: '#5b8dee',
+          backgroundColor: '#2563eb',
+          borderColor: '#2563eb',
           borderWidth: 1.5,
           borderRadius: 6
         },
@@ -397,18 +397,18 @@ function renderComparisonChart(props) {
       plugins: {
         legend: {
           labels: {
-            color: '#b6bed6',
+            color: '#374151',
             boxWidth: 10,
             usePointStyle: true,
             pointStyle: 'rectRounded'
           }
         },
         tooltip: {
-          backgroundColor: 'rgba(20, 22, 32, 0.95)',
-          borderColor: '#2c3040',
+          backgroundColor: 'rgba(255, 255, 255, 0.96)',
+          borderColor: '#e5e7eb',
           borderWidth: 1,
-          titleColor: '#9099b8',
-          bodyColor: '#e0e4ef',
+          titleColor: '#6b7280',
+          bodyColor: '#111827',
           callbacks: {
             label: ctx => {
               if (ctx.raw === null || ctx.raw === undefined) return `${ctx.dataset.label}: No data`;
@@ -420,14 +420,14 @@ function renderComparisonChart(props) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { color: '#6b75a0', font: { size: 11 } }
+          ticks: { color: '#6b7280', font: { size: 11 } }
         },
         y: {
           suggestedMin: 0,
           suggestedMax: 100,
-          grid: { color: '#1e2132' },
+          grid: { color: '#e5e7eb' },
           ticks: {
-            color: '#6b75a0',
+            color: '#6b7280',
             font: { size: 11 },
             callback: value => formatScore(value)
           }
@@ -462,9 +462,9 @@ function buildFillPaint(metricKey) {
     'fill-color': [
       'case',
       ['==', ['get', metricKey], null],
-      '#232735',
+      '#d1d5db',
       ['==', ['typeof', ['get', metricKey]], 'string'],
-      '#232735',
+      '#d1d5db',
       [
         'interpolate',
         ['linear'],

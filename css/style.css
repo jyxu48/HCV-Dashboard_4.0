@@ -37,7 +37,7 @@ body {
   background: white;
   border-bottom: 1px solid #e5e7eb;
   display: grid;
-  grid-template-columns: 66fr 34fr;
+  grid-template-columns: 58fr 42fr;
   align-items: center;
   height: 62px;
 }
@@ -47,6 +47,7 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
 .nav-brand img {
@@ -58,19 +59,23 @@ body {
 .nav-title {
   font-size: 13px;
   font-weight: 400;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #111827;
   line-height: 1.2;
   border-left: 1px solid #e5e7eb;
   padding-left: 14px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .topnav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 36px;
+  gap: 26px;
 }
 
 .topnav a {
@@ -103,6 +108,14 @@ body {
   max-width: 1150px;
   margin: 0 auto 120px auto;
   scroll-margin-top: 72px;
+}
+
+#explore-map,
+#voucher-gap,
+#opportunity-gap,
+#definitions {
+  padding-top: 72px;
+  border-top: 1px solid rgba(31, 40, 89, 0.12);
 }
 
 .intro-copy {
@@ -162,6 +175,69 @@ h4 {
   font-weight: 100;
   margin-bottom: 12px;
   color: rgba(17, 24, 39, 0.75);
+}
+
+.section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #1f2859;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.map-link-wrap {
+  margin: 30px 0 46px;
+  text-align: center;
+}
+
+.map-link-box {
+  display: inline-block;
+  width: 300px;
+  max-width: 100%;
+  margin: 0;
+  border: 1px solid rgba(31, 40, 89, 0.18);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+  transform-origin: center;
+}
+
+.map-link-box:hover {
+  transform: scale(1.035);
+}
+
+.map-link-box img {
+  display: block;
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+}
+
+.map-link-copy {
+  padding: 12px 14px 14px;
+}
+
+.map-link-copy strong {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  color: #1f2859;
+}
+
+.map-link-note {
+  max-width: 420px;
+  margin: 10px auto 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #6b7280;
 }
 
 .lead {
@@ -417,23 +493,59 @@ select, input[type="range"] {
 }
 
 .opportunity-copy-block {
-  margin: 28px 0;
+  margin: 58px auto;
+  font-family: 'Lato', sans-serif;
 }
 
 .opportunity-copy-block h4 {
-  font-size: 14px;
-  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #374151;
-  margin-bottom: 12px;
+  letter-spacing: 0.07em;
+  color: #1f2859;
+  margin-bottom: 18px;
 }
 
 .opportunity-copy-block p {
   margin: 0;
-  font-size: 15px;
-  color: #374151;
-  line-height: 1.8;
+  font-size: 16px;
+  color: #3f4654;
+  line-height: 1.9;
+}
+
+.analysis-figure {
+  margin: 64px auto 70px;
+  padding: 0;
+}
+
+.analysis-figure img {
+  display: block;
+  width: 72%;
+  max-width: 760px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.analysis-figure-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+  margin: 64px auto 70px;
+}
+
+.analysis-figure-pair .analysis-figure {
+  margin: 0;
+}
+
+.analysis-figure-pair .analysis-figure img {
+  width: 100%;
+  max-width: none;
+}
+
+#opportunity-dashboard .indicator-defs {
+  margin: 74px auto 0;
 }
 
 /* =====================================
@@ -843,10 +955,10 @@ select, input[type="range"] {
 .map-cards-stack {
   flex: 0 0 auto;
   width: 100%;
-  max-width: 720px;
+  max-width: 920px;
   min-height: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto auto auto;
   gap: 5px 12px;
 }
@@ -1096,6 +1208,26 @@ select, input[type="range"] {
 /* --- Responsive ------------------------------------------- */
 
 @media (max-width: 1000px) {
+  .nav-bar {
+    display: block;
+    height: auto;
+    padding: 10px 16px;
+  }
+  .nav-brand {
+    padding-left: 0;
+  }
+  .nav-title {
+    display: none;
+  }
+  .topnav {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-top: 8px;
+  }
+  .topnav a {
+    font-size: 12px;
+  }
   .landing-hero {
     flex-direction: column-reverse;
     height: unset;
@@ -1107,14 +1239,52 @@ select, input[type="range"] {
     padding: 24px 24px;
     gap: 20px;
   }
+  .landing-title {
+    white-space: normal;
+    font-size: 18px;
+  }
+
+  .map-link-copy {
+    padding: 12px 14px 14px;
+  }
+
   .landing-right {
     flex: unset;
     width: 100%;
     height: 260px;
   }
+  .card-group-label {
+    display: none;
+  }
   .map-cards-stack {
     grid-template-columns: 1fr;
     grid-template-rows: unset;
     flex: unset;
+    max-width: none;
   }
+
+  .opportunity-copy-block {
+    margin: 44px auto;
+  }
+
+  .analysis-figure {
+    margin: 56px auto 52px;
+    padding-top: 0;
+  }
+
+  .analysis-figure img {
+    width: 100%;
+    max-width: none;
+  }
+
+  .analysis-figure-pair {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    margin: 56px auto 52px;
+  }
+
+  #opportunity-dashboard .indicator-defs {
+    margin-top: 56px;
+  }
+
 }

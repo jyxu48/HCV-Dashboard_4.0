@@ -992,16 +992,26 @@ select, input[type="range"] {
   line-height: 1.9;
 }
 
+.opportunity-opening-copy {
+  max-width: var(--content-max);
+  margin: 26px 0 44px;
+  font-family: 'Lato', sans-serif;
+}
+
+.opportunity-opening-copy p {
+  margin: 0;
+  font-size: 16px;
+  color: #3f4654;
+  line-height: 1.9;
+}
+
 .opportunity-map-callout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 540px;
-  gap: 32px 44px;
-  align-items: start;
-  margin: 26px 0 70px;
+  display: flow-root;
+  max-width: none;
+  margin: 0 0 70px;
 }
 
 .opportunity-map-copy {
-  max-width: 560px;
   font-family: 'Lato', sans-serif;
 }
 
@@ -1012,12 +1022,24 @@ select, input[type="range"] {
   line-height: 1.9;
 }
 
+.opportunity-map-copy h4 {
+  margin: 0 0 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #1f2859;
+}
+
 .opportunity-map-copy p + p {
   margin-top: 22px;
 }
 
 .opportunity-map-link {
+  float: right;
   width: 540px;
+  margin: 0 0 28px 44px;
 }
 
 .opportunity-map-link img {
@@ -2258,6 +2280,10 @@ body.show-page-toc .page-toc {
     margin: 44px auto;
   }
 
+  .opportunity-opening-copy {
+    margin: 24px 0 36px;
+  }
+
   .opportunity-map-callout {
     display: block;
     margin: 24px 0 56px;
@@ -2268,8 +2294,11 @@ body.show-page-toc .page-toc {
   }
 
   .opportunity-map-link {
+    float: none;
     width: 100%;
     margin-top: 24px;
+    margin-left: 0;
+    margin-bottom: 0;
   }
 
   .opportunity-map-link img {

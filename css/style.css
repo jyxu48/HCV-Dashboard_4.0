@@ -18,6 +18,12 @@ body {
   line-height: 1.75;
 }
 
+:root {
+  --page-gutter: 99px;
+  --content-max: 1120px;
+  --toc-space: 310px;
+}
+
 /* =====================================
    TOP NAVIGATION
 ===================================== */
@@ -41,7 +47,7 @@ body {
   column-gap: 28px;
   align-items: center;
   height: 62px;
-  padding: 0 99px;
+  padding: 0 var(--page-gutter);
 }
 
 .nav-brand {
@@ -99,15 +105,16 @@ body {
 ===================================== */
 
 .container {
-  max-width: 2000px;
-  margin: 0 auto;
-  padding: 72px 99px 40px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 72px var(--page-gutter) 40px;
   background: #ffffff;
 }
 
 @media (min-width: 1280px) {
   .container {
-    padding-right: 310px;
+    padding-right: var(--toc-space);
   }
 }
 /* =====================================
@@ -115,7 +122,7 @@ body {
 ===================================== */
 
 .section {
-  max-width: 1120px;
+  max-width: var(--content-max);
   margin: 0 0 120px;
   scroll-margin-top: 72px;
 }
@@ -951,7 +958,7 @@ select, input[type="range"] {
   overflow: hidden;
   display: grid;
   align-items: end;
-  padding: 96px 99px 78px;
+  padding: 96px var(--page-gutter) 78px;
   color: #ffffff;
   background: #0f172a;
   scroll-margin-top: 62px;
@@ -1132,7 +1139,7 @@ select, input[type="range"] {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   min-height: calc(100vh - 62px);
-  padding: 74px 99px 64px;
+  padding: 74px var(--page-gutter) 64px;
   overflow: visible;
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
@@ -1142,7 +1149,7 @@ select, input[type="range"] {
 /* --- Left column ------------------------------------------ */
 
 .landing-left {
-  max-width: 980px;
+  max-width: var(--content-max);
   padding: 0;
   background: #fff;
 }

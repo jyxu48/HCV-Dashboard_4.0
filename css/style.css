@@ -20,7 +20,7 @@ body {
 
 :root {
   --page-gutter: 99px;
-  --content-max: 1120px;
+  --content-max: 980px;
   --toc-space: 310px;
 }
 
@@ -206,6 +206,19 @@ h4 {
   margin-bottom: 24px;
 }
 
+.platform-title {
+  font-size: 34px;
+  line-height: 1.15;
+  margin-bottom: 28px;
+}
+
+.platform-secondary-title {
+  font-size: 46px;
+  font-weight: 800;
+  color: #1f2859;
+  margin-top: 52px;
+}
+
 .map-link-wrap {
   margin: 30px 0 46px;
   text-align: center;
@@ -269,8 +282,8 @@ h4 {
   grid-column: 1 / -1;
   margin: 0;
   font-family: 'Montserrat', sans-serif;
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 46px;
+  font-weight: 800;
   line-height: 1.2;
   color: #1f2859;
 }
@@ -294,8 +307,45 @@ h4 {
   text-align: left;
 }
 
+.research-transition-title {
+  margin: 8px 0 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 30px;
+  font-weight: 450;
+  line-height: 1.25;
+  color: #1f2859;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.intro-copy .platform-secondary-title,
+.intro-copy .research-platform-title,
+.intro-copy .research-transition-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 30px;
+  font-weight: 450;
+  line-height: 1.25;
+  color: #1f2859;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.intro-copy .platform-secondary-title {
+  margin-top: 56px;
+  margin-bottom: 24px;
+}
+
+.intro-copy .research-platform-title {
+  margin: 0;
+}
+
+.intro-copy .research-transition-title {
+  margin-top: 64px;
+  margin-bottom: 18px;
+}
+
 .lead {
-  max-width: 900px;
+  max-width: var(--content-max);
   font-size: 18px;
   font-weight: 80;
   color: #374151;
@@ -548,8 +598,8 @@ select, input[type="range"] {
 }
 
 .opportunity-copy-block {
-  max-width: 820px;
-  margin: 58px auto;
+  max-width: var(--content-max);
+  margin: 58px 0;
   margin-left: 0;
   font-family: 'Lato', sans-serif;
 }
@@ -581,7 +631,7 @@ select, input[type="range"] {
 .analysis-figure img {
   display: block;
   width: 100%;
-  max-width: 980px;
+  max-width: 100%;
   height: auto;
   margin: 0;
 }
@@ -632,7 +682,7 @@ select, input[type="range"] {
 
 .analysis-figure-pair .analysis-figure img {
   width: 100%;
-  max-width: 980px;
+  max-width: 100%;
 }
 
 #opportunity-dashboard .indicator-defs {
@@ -1718,9 +1768,22 @@ body.show-page-toc .page-toc {
     margin: 34px 0 44px;
   }
 
-  .research-platform-title {
-    font-size: 24px;
+  .intro-copy .research-platform-title {
+    font-size: 30px;
     margin-bottom: 18px;
+  }
+
+  .platform-title {
+    font-size: 28px;
+  }
+
+  .intro-copy .platform-secondary-title {
+    font-size: 30px;
+    margin-top: 40px;
+  }
+
+  .intro-copy .research-transition-title {
+    font-size: 30px;
   }
 
   .research-platform-callout .map-link-box {

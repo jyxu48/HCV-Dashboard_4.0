@@ -141,19 +141,134 @@
         </div>
 
         <h3 class="research-transition-title">A Research Framework for Real Housing Choice</h3>
-        <p>The interactive platform provides the broader empirical base; the rest of the report follows the voucher pathway as a sequence of linked questions: who remains underserved, which local systems turn assistance into actual leases, and whether lease-up expands access to opportunity after move-in.</p>
+        <p>The interactive platform provides the broader empirical base; the rest of the report turns that base into three linked tests of whether voucher assistance becomes real housing choice. The framework treats the voucher not as a single benefit, but as a pathway shaped by scarcity, administration, landlord participation, payment standards, search time, and neighborhood opportunity.</p>
+        <ol>
+          <li><strong>Unmet assistance need:</strong> the Voucher Gap Ratio asks where eligible renters remain underserved, and how the geography of shortage changes when need is viewed through renter, child, poverty, elderly, and racial equity lenses.</li>
+          <li><strong>Administrative conversion:</strong> the PHA Level Performance Metrics ask whether local systems can convert available assistance into actual leases, and where high aggregate utilization may still mask issued-but-not-leased vouchers, fiscal constraints, portability effects, or local market bottlenecks.</li>
+          <li><strong>Post-lease-up opportunity:</strong> the Opportunity Gap asks whether households who successfully lease up are reaching neighborhoods comparable to the broader renter market, or whether voucher use remains spatially constrained after the formal search process ends.</li>
+        </ol>
+
+        <figure class="pathway-figure" aria-labelledby="pathway-figure-title">
+          <h4 id="pathway-figure-title">Voucher Access Pathway and Research Modules</h4>
+          <div class="pathway-drawing-wrap">
+            <svg class="pathway-drawing" viewBox="0 0 980 330" role="img" aria-labelledby="pathway-svg-title pathway-svg-desc">
+              <title id="pathway-svg-title">Voucher access pathway and research modules</title>
+              <desc id="pathway-svg-desc">A five-stage voucher user pathway showing how the Voucher Gap Ratio, PHA Level Performance Metrics, and Opportunity Gap modules correspond to different stages of access.</desc>
+              <g class="pathway-stage-cards">
+                <rect class="pathway-stage-card pathway-stage-card-1" x="0" y="44" width="145" height="160" rx="10"></rect>
+                <rect class="pathway-stage-card pathway-stage-card-2" x="205" y="44" width="145" height="160" rx="10"></rect>
+                <rect class="pathway-stage-card pathway-stage-card-3" x="410" y="44" width="145" height="160" rx="10"></rect>
+                <rect class="pathway-stage-card pathway-stage-card-4" x="615" y="44" width="145" height="160" rx="10"></rect>
+                <rect class="pathway-stage-card pathway-stage-card-5" x="820" y="44" width="145" height="160" rx="10"></rect>
+              </g>
+
+              <g class="pathway-flow">
+                <path class="pathway-arrow-shape pathway-arrow-gray" d="M168 116 H184 V110 L198 124 L184 138 V132 H168 Z"></path>
+                <path class="pathway-arrow-shape pathway-arrow-orange" d="M373 116 H389 V110 L403 124 L389 138 V132 H373 Z"></path>
+                <path class="pathway-arrow-shape pathway-arrow-orange" d="M578 116 H594 V110 L608 124 L594 138 V132 H578 Z"></path>
+                <path class="pathway-arrow-shape pathway-arrow-red" d="M783 116 H799 V110 L813 124 L799 138 V132 H783 Z"></path>
+              </g>
+
+              <g class="pathway-stage-node pathway-stage-1" transform="translate(16 0)">
+                <text class="pathway-svg-number" x="0" y="84">01</text>
+                <g class="pathway-svg-icon" transform="translate(54 60)">
+                  <path d="M0 34 L18 2 L36 34 Z"></path>
+                  <path d="M18 13 L18 24"></path>
+                  <path d="M18 29 L18 30"></path>
+                </g>
+                <text class="pathway-svg-stage-title" x="0" y="128">Limited access</text>
+                <text class="pathway-svg-body" x="0" y="150">
+                  <tspan x="0" dy="0">Limited supply, waiting</tspan>
+                  <tspan x="0" dy="19">lists, lotteries, delays</tspan>
+                </text>
+              </g>
+
+              <g class="pathway-stage-node pathway-stage-2" transform="translate(221 0)">
+                <text class="pathway-svg-number" x="0" y="84">02</text>
+                <g class="pathway-svg-icon" transform="translate(54 58)">
+                  <path d="M18 2 A18 18 0 1 1 17.9 2"></path>
+                  <path d="M18 10 L18 20 L26 25"></path>
+                  <path d="M12 0 L24 0"></path>
+                </g>
+                <text class="pathway-svg-stage-title" x="0" y="128">Timed search</text>
+                <text class="pathway-svg-body" x="0" y="150">
+                  <tspan x="0" dy="0">Countdown begins under</tspan>
+                  <tspan x="0" dy="19">program constraints</tspan>
+                </text>
+              </g>
+
+              <g class="pathway-stage-node pathway-stage-3" transform="translate(426 0)">
+                <text class="pathway-svg-number" x="0" y="84">03</text>
+                <g class="pathway-svg-icon" transform="translate(54 60)">
+                  <path d="M2 35 L2 14 L18 4 L34 14 L34 35"></path>
+                  <path d="M11 35 L11 22 L25 22 L25 35"></path>
+                  <path d="M0 5 L36 36"></path>
+                </g>
+                <text class="pathway-svg-stage-title" x="0" y="128">Market barriers</text>
+                <text class="pathway-svg-body" x="0" y="150">
+                  <tspan x="0" dy="0">Landlord refusal, rent</tspan>
+                  <tspan x="0" dy="19">limits, weak information</tspan>
+                </text>
+              </g>
+
+              <g class="pathway-stage-node pathway-stage-4" transform="translate(631 0)">
+                <text class="pathway-svg-number" x="0" y="84">04</text>
+                <g class="pathway-svg-icon" transform="translate(58 58)">
+                  <path d="M4 2 L28 2 L28 38 L4 38 Z"></path>
+                  <path d="M10 12 L22 12"></path>
+                  <path d="M10 20 L22 20"></path>
+                  <path d="M9 31 L14 35 L23 26"></path>
+                </g>
+                <text class="pathway-svg-stage-title" x="0" y="128">Lease-up friction</text>
+                <text class="pathway-svg-body" x="0" y="150">
+                  <tspan x="0" dy="0">Inspections, payment</tspan>
+                  <tspan x="0" dy="19">standards, timing</tspan>
+                </text>
+              </g>
+
+              <g class="pathway-stage-node pathway-stage-5" transform="translate(836 0)">
+                <text class="pathway-svg-number" x="0" y="84">05</text>
+                <g class="pathway-svg-icon" transform="translate(56 56)">
+                  <path d="M18 2 C8 2 2 9 2 18 C2 31 18 42 18 42 C18 42 34 31 34 18 C34 9 28 2 18 2 Z"></path>
+                  <path d="M12 18 A6 6 0 1 1 24 18 A6 6 0 1 1 12 18"></path>
+                  <path d="M4 43 L32 43"></path>
+                </g>
+                <text class="pathway-svg-stage-title" x="0" y="128">Spatial outcome</text>
+                <text class="pathway-svg-body" x="0" y="150">
+                  <tspan x="0" dy="0">Final location shapes</tspan>
+                  <tspan x="0" dy="19">neighborhood access</tspan>
+                </text>
+              </g>
+
+              <g class="pathway-modules">
+                <rect class="pathway-module-shape pathway-module-card-1" x="0" y="232" width="145" height="62" rx="8"></rect>
+                <rect class="pathway-module-shape pathway-module-card-2" x="205" y="232" width="555" height="62" rx="8"></rect>
+                <rect class="pathway-module-shape pathway-module-card-5" x="820" y="232" width="145" height="62" rx="8"></rect>
+
+                <text class="pathway-module-label pathway-module-label-centered" x="72.5" y="257">Voucher Gap Ratio</text>
+                <text class="pathway-module-question pathway-module-question-centered" x="72.5" y="278">Who remains underserved?</text>
+
+                <text class="pathway-module-label pathway-module-label-centered" x="482.5" y="257">PHA Level Performance Metrics</text>
+                <text class="pathway-module-question pathway-module-question-centered" x="482.5" y="278">Which systems turn assistance into leases?</text>
+
+                <text class="pathway-module-label pathway-module-label-centered" x="892.5" y="257">Opportunity Gap</text>
+                <text class="pathway-module-question pathway-module-question-centered" x="892.5" y="278">Expand choice?</text>
+              </g>
+            </svg>
+          </div>
+        </figure>
 
         <h3 class="section-title">Why Start from the User Perspective</h3>
-        <p>There is already a substantial literature on affordability, segregation, voucher design, and landlord participation. This project starts from a different question: what does the HCV process look like from the perspective of the low-income households who need to use it? Rather than treating voucher issuance as the endpoint, we follow the journey from application to lease-up and move-in.</p>
+        <p>Existing research shows that the strongest barriers often appear between formal eligibility and actual housing outcomes. Voucher holders may face closed waiting lists before assistance is available, search pressure after issuance, landlord refusal during the housing search, administrative delays before lease approval, and unequal neighborhood access even after move-in. Starting from the user perspective makes these hidden frictions visible.</p>
+        <p>This matters because standard program measures can make the system look more complete than it feels to households trying to use it. A voucher may be funded but unavailable, issued but unused, leased but geographically constrained, or counted as a success while still leaving a family in a low-opportunity environment. Following the user pathway helps connect program performance to lived access.</p>
         <ol>
-          <li><strong>Entering the system:</strong> many families face closed waiting lists, lotteries, and years of delay before assistance becomes available.</li>
-          <li><strong>After issuance:</strong> the voucher starts a short countdown, and households must search under intense time pressure.</li>
-          <li><strong>Searching for a unit:</strong> voucher holders may encounter landlord refusal, limited listings, and administrative complexity.</li>
-          <li><strong>Trying to close a lease:</strong> payment standards, inspections, and approval timelines can cause otherwise viable units to fall through.</li>
-          <li><strong>After lease-up:</strong> where a family ultimately rents shapes whether the voucher leads only to short-term stability or also to meaningful access to opportunity.</li>
-          <li><strong>Throughout the process:</strong> information costs, compliance burden, repeated rejection, and uncertainty create hidden barriers that are easy to miss in aggregate statistics.</li>
+          <li><strong>Before entry:</strong> limited supply, closed waiting lists, lotteries, and long delays determine who ever receives assistance.</li>
+          <li><strong>After issuance:</strong> the voucher creates a time-limited search process in which households must find an eligible unit, landlord, rent level, and inspection timeline that all align.</li>
+          <li><strong>During the search:</strong> landlord refusal, source-of-income discrimination, limited listings, weak information, and payment standards can narrow the geography of realistic choice.</li>
+          <li><strong>At lease-up:</strong> administrative approvals, inspections, portability rules, and market rents can determine whether an apparently viable unit becomes an actual subsidized lease.</li>
+          <li><strong>After move-in:</strong> the location of the leased unit shapes whether the voucher delivers only rent relief or also access to safer, better-resourced, and more opportunity-rich neighborhoods.</li>
         </ol>
-        <p><strong>In short:</strong> Housing Choice Vouchers are designed to expand housing choice for low-income households, but in practice, access is shaped by long waitlists, administrative burden, landlord participation, rent constraints, and unequal neighborhood opportunity.</p>
+        <p><strong>In short:</strong> this report evaluates HCV not only as a subsidy program, but as a chain of access. Each module asks where that chain breaks: before assistance reaches eligible renters, during local program administration, or after lease-up when the geography of opportunity is finally revealed.</p>
 
       </section>
 
@@ -218,10 +333,12 @@
       <!-- Opportunity Gap -->
       <section id="opportunity-gap" class="section">
         <h2 class="section-title">Opportunity Gap</h2>
-        <p class="lead">This module maps metropolitan statistical area-level gaps between the neighborhood opportunity exposure of HCV households and the broader renter population, showing where voucher households are concentrated in lower-opportunity or higher-opportunity metropolitan areas relative to renters overall.</p>
-
-        <div class="map-link-wrap">
-          <a href="dashboards/opportunity/index.html" target="_blank" rel="noopener" class="map-link-box" aria-label="Open Opportunity Gap interactive map">
+        <div class="opportunity-map-callout">
+          <div class="opportunity-map-copy">
+            <p>The PHA performance metrics show whether local agencies can convert voucher assistance into actual leases. But lease-up is not the end of the housing choice question. Once a household succeeds in using a voucher, the next test is where that voucher can realistically be used.</p>
+            <p>This module maps metropolitan statistical area-level gaps between the neighborhood opportunity exposure of HCV households and the broader renter population, showing where voucher households are concentrated in lower-opportunity or higher-opportunity metropolitan areas relative to renters overall.</p>
+          </div>
+          <a href="dashboards/opportunity/index.html" target="_blank" rel="noopener" class="map-link-box opportunity-map-link" aria-label="Open Opportunity Gap interactive map">
             <img src="images/OPP_1.PNG" alt="Opportunity Gap interactive map preview">
             <div class="map-link-copy">
               <strong>Open Opportunity Map</strong>

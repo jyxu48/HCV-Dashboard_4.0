@@ -23,7 +23,7 @@
       <span class="nav-title">Universal Housing Voucher Program Performance and Supply Demand Gaps</span>
     </div>
     <nav class="topnav">
-      <a href="#landing">Home</a>
+      <a href="#cover">Home</a>
       <a href="#background">Background</a>
       <a href="#opportunity-gap">Opportunity Gap</a>
       <a href="#definitions">Definitions &amp; Methods</a>
@@ -36,97 +36,83 @@
   ========================== -->
   <main>
 
+    <!-- ========================= IMMERSIVE COVER ========================= -->
+    <section id="cover" class="cover-hero" aria-labelledby="cover-title">
+      <div class="cover-content">
+        <p class="cover-kicker">Housing Choice Voucher Research Platform</p>
+        <h1 id="cover-title">Where voucher assistance meets local housing markets</h1>
+        <p class="cover-sub">A visual report on program performance, unmet assistance need, and the geography of opportunity after lease-up.</p>
+        <a href="#landing" class="cover-enter" aria-label="Enter the report landing page">
+          <span>Enter Report</span>
+          <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+
+      <div class="cover-rail" aria-label="Project story structure">
+        <span>Need</span>
+        <span>Administration</span>
+        <span>Opportunity</span>
+      </div>
+
+      <a href="#landing" class="cover-scroll" aria-label="Scroll to report">
+        <span></span>
+      </a>
+    </section>
+    <!-- ========================= END IMMERSIVE COVER ========================= -->
+
     <!-- ========================= LANDING HERO ========================= -->
     <section id="landing" class="landing-hero">
 
-      <!-- Left: title + clickable map cards -->
       <div class="landing-left">
 
+        <p class="landing-meta">HCV Research Platform</p>
         <div class="landing-headline">
           <h1 class="landing-title">Universal Housing Voucher Program Performance and Supply Demand Gaps</h1>
-          <p class="landing-sub">This platform evaluates Housing Choice Voucher program performance and quantifies the gap between eligible renter households and available housing assistance across geographic levels like State, County, Census Tract and by PHAs.</p>
+          <p class="landing-sub">A national reporting platform for evaluating Housing Choice Voucher performance, unmet rental assistance need, and the geography of neighborhood opportunity.</p>
+          <p class="landing-report-meta">May 2026 · Housing Initiative at Penn</p>
         </div>
 
-        <div class="map-cards-stack">
+        <p class="landing-abstract">The project follows the voucher process from need, to program administration, to post-lease-up opportunity. It asks where eligible renters remain underserved, where PHA performance differs across local systems, and whether voucher households are reaching neighborhoods with opportunity conditions comparable to renters overall.</p>
 
-          <!-- Column headers -->
-          <div class="card-group-label">Voucher Gap</div>
-          <div class="card-group-label">PHA Performance</div>
-          <div class="card-group-label">Opportunity Gap</div>
-
-          <!-- Row 1: Interactive maps -->
-          <a href="dashboards/hcv/gap.html" target="_blank" rel="noopener" class="map-entry-card">
-            <div class="card-thumb card-thumb-img" style="background-image: url('images/VG_1.PNG');">
-              <div class="thumb-overlay"><span class="thumb-chip">Interactive Map</span></div>
-            </div>
-            <div class="card-info">
-              <span class="card-module-tag">Map</span>
-              <h3 class="card-name">Voucher Gap Ratio Interactive Map</h3>
-              <p class="card-desc">State, county, and tract-level mismatch between housing need and voucher supply.</p>
-              <span class="card-cta">Explore Map &rarr;</span>
-            </div>
+        <div class="landing-tools" aria-label="Interactive tools">
+          <a href="dashboards/hcv/gap.html" target="_blank" rel="noopener" class="landing-tool-link">
+            <strong>Voucher Gap Ratio Interactive Map</strong>
+            <span>Open map</span>
           </a>
-
-          <a href="dashboards/hcv/index.html" target="_blank" rel="noopener" class="map-entry-card">
-            <div class="card-thumb card-thumb-img" style="background-image: url('images/PHA_1.PNG');">
-              <div class="thumb-overlay"><span class="thumb-chip">Interactive Map</span></div>
-            </div>
-            <div class="card-info">
-              <span class="card-module-tag">Map</span>
-              <h3 class="card-name">PHA Performance Interactive Map</h3>
-              <p class="card-desc">PHA-level utilization, success rate, and cost per voucher across the country.</p>
-              <span class="card-cta">Explore Map &rarr;</span>
-            </div>
+          <a href="dashboards/hcv/index.html" target="_blank" rel="noopener" class="landing-tool-link">
+            <strong>PHA Performance Interactive Map</strong>
+            <span>Open map</span>
           </a>
-
-          <a href="dashboards/opportunity/index.html" target="_blank" rel="noopener" class="map-entry-card">
-            <div class="card-thumb card-thumb-img" style="background-image: url('images/OPP_1.PNG');">
-              <div class="thumb-overlay"><span class="thumb-chip">Interactive Map</span></div>
-            </div>
-            <div class="card-info">
-              <span class="card-module-tag">Map</span>
-              <h3 class="card-name">Opportunity Gap Interactive Map</h3>
-              <p class="card-desc">Metro-level gaps between HCV household and renter neighborhood opportunity exposure.</p>
-              <span class="card-cta">Explore Map &rarr;</span>
-            </div>
+          <a href="dashboards/opportunity/index.html" target="_blank" rel="noopener" class="landing-tool-link">
+            <strong>Opportunity Gap Interactive Map</strong>
+            <span>Open map</span>
           </a>
-
-          <!-- Row 2: Comparison charts -->
-          <a href="dashboards/hcv/metro_chart.html" target="_blank" rel="noopener" class="map-entry-card">
-            <div class="card-thumb card-thumb-img" style="background-image: url('images/VG_2.PNG');">
-              <div class="thumb-overlay"><span class="thumb-chip">Comparison</span></div>
-            </div>
-            <div class="card-info">
-              <span class="card-module-tag">Charts</span>
-              <h3 class="card-name">Compare Voucher Gap Ratios Across Cities</h3>
-              <p class="card-desc">Weighted gap ratios across the 25 largest metros by AMI and demographic group.</p>
-              <span class="card-cta">View Charts &rarr;</span>
-            </div>
+          <a href="dashboards/hcv/metro_chart.html" target="_blank" rel="noopener" class="landing-tool-link">
+            <strong>Compare Voucher Gap Ratios Across Cities</strong>
+            <span>View charts</span>
           </a>
-
-          <a href="dashboards/hcv/pha_charts.html" target="_blank" rel="noopener" class="map-entry-card">
-            <div class="card-thumb card-thumb-img" style="background-image: url('images/PHA_2.PNG');">
-              <div class="thumb-overlay"><span class="thumb-chip">Comparison</span></div>
-            </div>
-            <div class="card-info">
-              <span class="card-module-tag">Charts</span>
-              <h3 class="card-name">Compare PHA Performances</h3>
-              <p class="card-desc">Top and bottom PHAs by utilization, success rate, cost per voucher, and reserves.</p>
-              <span class="card-cta">View Charts &rarr;</span>
-            </div>
+          <a href="dashboards/hcv/pha_charts.html" target="_blank" rel="noopener" class="landing-tool-link">
+            <strong>Compare PHA Performances</strong>
+            <span>View charts</span>
           </a>
-
         </div>
-      </div>
-
-      <!-- Right: background image -->
-      <div class="landing-right">
-        <img src="images/Landing_page_Image_2.jpg" alt="Housing in America" class="landing-bg-img">
-        <p class="landing-img-credit">Illustration by Tim Peacock, taken from <em>40 Big Ideas to Make New York City More Affordable</em>, The New York Times, 2025.</p>
       </div>
 
     </section>
     <!-- ========================= END LANDING HERO ========================= -->
+
+    <aside class="page-toc" aria-labelledby="toc-title">
+      <p class="page-toc-kicker">Contents</p>
+      <h2 id="toc-title">Table of Contents</h2>
+      <ol>
+        <li><a href="#background">Background</a></li>
+        <li><a href="#explore-map">PHA Level Performance Metrics</a></li>
+        <li><a href="#voucher-gap">Voucher Gap Ratio</a></li>
+        <li><a href="#opportunity-gap">Opportunity Gap</a></li>
+        <li><a href="#definitions">Definitions &amp; Methods</a></li>
+        <li><a href="#datasets">Datasets &amp; References</a></li>
+      </ol>
+    </aside>
 
     <div class="container">
 
@@ -258,9 +244,17 @@
 
           <div class="analysis-figure-pair">
             <figure class="analysis-figure">
+              <div class="figure-bar">
+                <span>Figure 1</span>
+                <a href="images/opportunity-analysis/national_coi_exposure.svg" download>Download SVG</a>
+              </div>
               <img src="images/opportunity-analysis/national_coi_exposure.svg" alt="National COI exposure comparison between HCV households and renters">
             </figure>
             <figure class="analysis-figure">
+              <div class="figure-bar">
+                <span>Figure 2</span>
+                <a href="images/opportunity-analysis/metro_gap_extremes.svg" download>Download SVG</a>
+              </div>
               <img src="images/opportunity-analysis/metro_gap_extremes.svg" alt="Metro areas with the largest negative and positive opportunity gaps">
             </figure>
           </div>
@@ -272,6 +266,10 @@
           </div>
 
           <figure class="analysis-figure">
+            <div class="figure-bar">
+              <span>Figure 3</span>
+              <a href="images/opportunity-analysis/hcv_vs_renter_scatter.svg" download>Download SVG</a>
+            </div>
             <img src="images/opportunity-analysis/hcv_vs_renter_scatter.svg" alt="Scatter plot comparing HCV-weighted and renter-weighted COI exposure across metro areas">
           </figure>
 
@@ -433,6 +431,41 @@
   <script>
     // Tiny UX: footer year.
     document.getElementById("yearNow").textContent = new Date().getFullYear();
+
+    const coverHero = document.querySelector(".cover-hero");
+    if (coverHero) {
+      coverHero.addEventListener("pointermove", (event) => {
+        const rect = coverHero.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        coverHero.style.setProperty("--mx", x.toFixed(3));
+        coverHero.style.setProperty("--my", y.toFixed(3));
+      });
+
+      coverHero.addEventListener("pointerleave", () => {
+        coverHero.style.setProperty("--mx", "0");
+        coverHero.style.setProperty("--my", "0");
+      });
+    }
+
+    const landingSection = document.getElementById("landing");
+    const footer = document.querySelector(".footer");
+    const updatePageToc = () => {
+      if (!landingSection || window.innerWidth < 1280) {
+        document.body.classList.remove("show-page-toc");
+        return;
+      }
+
+      const landingBottom = landingSection.offsetTop + landingSection.offsetHeight;
+      const footerTop = footer ? footer.getBoundingClientRect().top : Infinity;
+      const pastLanding = window.scrollY > landingBottom - 80;
+      const beforeFooter = footerTop > 220;
+      document.body.classList.toggle("show-page-toc", pastLanding && beforeFooter);
+    };
+
+    updatePageToc();
+    window.addEventListener("scroll", updatePageToc, { passive: true });
+    window.addEventListener("resize", updatePageToc);
   </script>
 
 </body>

@@ -1482,7 +1482,7 @@ select, input[type="range"] {
   position: absolute;
   inset: -24px;
   z-index: -3;
-  background-image: url('../images/hero-bg.png');
+  background-image: url('../images/landing.png');
   background-size: cover;
   background-position: center;
   transform: translate(calc(var(--mx) * -10px), calc(var(--my) * -8px)) scale(1.055);

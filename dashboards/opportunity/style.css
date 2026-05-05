@@ -174,9 +174,8 @@ html, body {
 }
 
 #info-panel {
-  padding: 18px 16px 14px;
+  padding: 16px 16px 14px;
   border-bottom: 1px solid #e5e7eb;
-  min-height: 240px;
 }
 
 #info-default {
@@ -203,7 +202,7 @@ html, body {
 }
 
 #info-header {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 #info-tract-name {
@@ -229,21 +228,18 @@ html, body {
 }
 
 #info-metrics {
+  display: block;
+}
+
+.metric-explainer {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
-.metric-card {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 7px;
-  padding: 9px 10px;
-}
-
-.metric-card.highlighted {
-  border-color: #2563eb;
-  background: #eff6ff;
+.gap-summary {
+  border: 1px solid #dbe3ec;
+  background: #f8fafc;
+  padding: 10px 11px;
 }
 
 .metric-label {
@@ -254,22 +250,173 @@ html, body {
   margin-bottom: 4px;
 }
 
-.metric-value {
-  font-size: 15px;
+.gap-value {
+  font-size: 24px;
+  line-height: 1;
   font-weight: 700;
   color: #111827;
+  margin-top: 7px;
 }
 
-.metric-value.na {
+.gap-value.na,
+.score-row-value.na {
   color: #9ca3af;
+}
+
+.gap-summary.negative .gap-value {
+  color: #8f1239;
+}
+
+.gap-summary.positive .gap-value {
+  color: #1d4ed8;
+}
+
+.gap-summary.neutral .gap-value {
+  color: #475569;
+}
+
+.gap-formula {
+  margin-top: 6px;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.gap-interpretation {
+  margin-top: 7px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #334155;
+}
+
+.score-comparison {
+  border: 1px solid #e5e7eb;
+  padding: 10px 11px;
+  background: #ffffff;
+}
+
+.score-row + .score-row {
+  margin-top: 10px;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 10px;
+  align-items: center;
+}
+
+.score-row-label {
+  font-size: 11px;
+  color: #475569;
+  line-height: 1.3;
+}
+
+.score-row-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-track {
+  grid-column: 1 / -1;
+  height: 6px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  min-width: 2px;
+}
+
+.domain-breakdown {
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 10px 11px;
+}
+
+.domain-title {
+  font-size: 10px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
+  margin-bottom: 7px;
+  font-weight: 700;
+}
+
+.domain-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 10px;
+  padding: 7px 0;
+  border-top: 1px solid #eef2f7;
+}
+
+.domain-row:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.domain-row:last-child {
+  padding-bottom: 0;
+}
+
+.domain-label {
+  font-size: 11.5px;
+  font-weight: 650;
+  color: #334155;
+}
+
+.domain-gap {
   font-size: 12px;
+  font-weight: 750;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+}
+
+.domain-gap.negative { color: #8f1239; }
+.domain-gap.positive { color: #1d4ed8; }
+.domain-gap.na { color: #9ca3af; }
+
+.domain-detail {
+  grid-column: 1 / -1;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: #64748b;
+}
+
+.national-reference {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: baseline;
+}
+
+.national-reference span {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.national-reference strong {
+  font-size: 14px;
+  color: #111827;
+  font-variant-numeric: tabular-nums;
+}
+
+.national-reference em {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #64748b;
+  font-style: normal;
 }
 
 #flag-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
+  display: none;
 }
 
 .flag-pill {
@@ -290,9 +437,7 @@ html, body {
 }
 
 #chart-panel {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  flex-shrink: 0;
+  display: none !important;
 }
 
 #chart-header {
@@ -321,7 +466,7 @@ html, body {
 }
 
 #download-panel {
-  padding: 16px;
+  padding: 14px 16px 16px;
   margin-top: auto;
 }
 
@@ -356,10 +501,10 @@ html, body {
 }
 
 #download-copy {
-  margin: 0 0 12px;
-  font-size: 12px;
+  margin: 0 0 10px;
+  font-size: 11.5px;
   color: #6b7280;
-  line-height: 1.55;
+  line-height: 1.4;
 }
 
 #download-btn {

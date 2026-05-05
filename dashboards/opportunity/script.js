@@ -270,57 +270,176 @@ function updateSidebar(feature, isLocked) {
   document.getElementById('info-tract-code').textContent = `${props.cbsa_code || 'Unknown Metropolitan Statistical Area'}${isLocked ? '  ·  Locked' : ''}`;
   document.getElementById('info-context').textContent = buildContextLine(props);
 
-  const cards = [
-    {
-      label: meta.shortLabel,
-      value: toNumber(props[currentMetric]),
-      format: meta.format,
-      highlighted: true
-    },
-    {
-      label: meta.hcvLabel,
-      value: toNumber(props[meta.hcvField]),
-      format: meta.sourceFormat
-    },
-    {
-      label: meta.renterLabel,
-      value: toNumber(props[meta.renterField]),
-      format: meta.sourceFormat
-    },
-    {
-      label: 'U.S. Avg Gap',
-      value: toNumber(national[currentMetric]),
-      format: meta.format
-    }
-  ];
-
   const grid = document.getElementById('info-metrics');
   grid.innerHTML = '';
 
-  cards.forEach(cardData => {
-    const card = document.createElement('div');
-    card.className = 'metric-card' + (cardData.highlighted ? ' highlighted' : '');
+  const gapValue = toNumber(props[currentMetric]);
+  const hcvValue = toNumber(props[meta.hcvField]);
+  const renterValue = toNumber(props[meta.renterField]);
+  const nationalGap = toNumber(national[currentMetric]);
 
-    const label = document.createElement('div');
-    label.className = 'metric-label';
-    label.textContent = cardData.label;
+  const explainer = document.createElement('div');
+  explainer.className = 'metric-explainer';
 
-    const value = document.createElement('div');
-    value.className = 'metric-value';
+  const summary = document.createElement('div');
+  summary.className = 'gap-summary';
+  if (gapValue !== null) {
+    summary.classList.add(gapValue < 0 ? 'negative' : gapValue > 0 ? 'positive' : 'neutral');
+  }
 
-    if (cardData.value === null) {
-      value.textContent = 'N/A';
-      value.classList.add('na');
-    } else {
-      value.textContent = cardData.format(cardData.value);
-    }
+  const summaryLabel = document.createElement('div');
+  summaryLabel.className = 'metric-label';
+  summaryLabel.textContent = 'Selected metro gap';
 
-    card.appendChild(label);
-    card.appendChild(value);
-    grid.appendChild(card);
+  const summaryValue = document.createElement('div');
+  summaryValue.className = 'gap-value' + (gapValue === null ? ' na' : '');
+  summaryValue.textContent = gapValue === null ? 'N/A' : meta.format(gapValue);
+
+  const formula = document.createElement('div');
+  formula.className = 'gap-formula';
+  formula.textContent = 'Gap = HCV-weighted score - renter-weighted score';
+
+  const interpretation = document.createElement('div');
+  interpretation.className = 'gap-interpretation';
+  interpretation.textContent = describeGap(gapValue);
+
+  summary.appendChild(summaryLabel);
+  summary.appendChild(summaryValue);
+  summary.appendChild(formula);
+  summary.appendChild(interpretation);
+  explainer.appendChild(summary);
+
+  const comparison = document.createElement('div');
+  comparison.className = 'score-comparison';
+  appendScoreRow(comparison, meta.hcvLabel, hcvValue, '#2563eb');
+  appendScoreRow(comparison, meta.renterLabel, renterValue, '#64748b');
+  explainer.appendChild(comparison);
+
+  const domains = document.createElement('div');
+  domains.className = 'domain-breakdown';
+
+  const domainTitle = document.createElement('div');
+  domainTitle.className = 'domain-title';
+  domainTitle.textContent = 'COI domain gaps';
+  domains.appendChild(domainTitle);
+
+  [
+    { label: 'Education', gap: 'gap_coi_edu', hcv: 'hcv_coi_edu', renter: 'renter_coi_edu' },
+    { label: 'Health & Environment', gap: 'gap_coi_health_env', hcv: 'hcv_coi_health_env', renter: 'renter_coi_health_env' },
+    { label: 'Social & Economic', gap: 'gap_coi_eco', hcv: 'hcv_coi_eco', renter: 'renter_coi_eco' }
+  ].forEach(domain => {
+    appendDomainRow(
+      domains,
+      domain.label,
+      toNumber(props[domain.gap]),
+      toNumber(props[domain.hcv]),
+      toNumber(props[domain.renter])
+    );
   });
 
+  explainer.appendChild(domains);
+
+  const reference = document.createElement('div');
+  reference.className = 'national-reference';
+
+  const refLabel = document.createElement('span');
+  refLabel.textContent = 'U.S. average gap';
+
+  const refValue = document.createElement('strong');
+  refValue.textContent = nationalGap === null ? 'N/A' : meta.format(nationalGap);
+
+  reference.appendChild(refLabel);
+  reference.appendChild(refValue);
+
+  if (gapValue !== null && nationalGap !== null) {
+    const refNote = document.createElement('em');
+    refNote.textContent = describeNationalComparison(gapValue, nationalGap);
+    reference.appendChild(refNote);
+  }
+
+  explainer.appendChild(reference);
+  grid.appendChild(explainer);
+
   renderFlags(props);
+}
+
+function appendScoreRow(container, labelText, value, color) {
+  const row = document.createElement('div');
+  row.className = 'score-row';
+
+  const label = document.createElement('div');
+  label.className = 'score-row-label';
+  label.textContent = labelText;
+
+  const valueLabel = document.createElement('div');
+  valueLabel.className = 'score-row-value' + (value === null ? ' na' : '');
+  valueLabel.textContent = value === null ? 'N/A' : formatScore(value);
+
+  const track = document.createElement('div');
+  track.className = 'score-track';
+
+  const fill = document.createElement('div');
+  fill.className = 'score-fill';
+  fill.style.background = color;
+  fill.style.width = value === null ? '0%' : `${Math.max(0, Math.min(100, value))}%`;
+
+  track.appendChild(fill);
+  row.appendChild(label);
+  row.appendChild(valueLabel);
+  row.appendChild(track);
+  container.appendChild(row);
+}
+
+function appendDomainRow(container, labelText, gapValue, hcvValue, renterValue) {
+  const row = document.createElement('div');
+  row.className = 'domain-row';
+
+  const label = document.createElement('div');
+  label.className = 'domain-label';
+  label.textContent = labelText;
+
+  const gap = document.createElement('div');
+  gap.className = 'domain-gap' + (gapValue === null ? ' na' : gapValue < 0 ? ' negative' : gapValue > 0 ? ' positive' : ' neutral');
+  gap.textContent = gapValue === null ? 'N/A' : formatGap(gapValue);
+
+  const detail = document.createElement('div');
+  detail.className = 'domain-detail';
+  detail.textContent = hcvValue === null || renterValue === null
+    ? 'HCV / renter scores unavailable'
+    : `HCV ${formatScore(hcvValue)} · Renters ${formatScore(renterValue)}`;
+
+  row.appendChild(label);
+  row.appendChild(gap);
+  row.appendChild(detail);
+  container.appendChild(row);
+}
+
+function describeGap(value) {
+  if (value === null) {
+    return 'No gap value is available for this metropolitan area.';
+  }
+
+  const magnitude = Math.abs(value).toFixed(1);
+  if (value < -0.05) {
+    return `HCV households are exposed to ${magnitude} fewer opportunity points than renters overall.`;
+  }
+  if (value > 0.05) {
+    return `HCV households are exposed to ${magnitude} more opportunity points than renters overall.`;
+  }
+  return 'HCV households and renters have nearly equal opportunity exposure.';
+}
+
+function describeNationalComparison(value, nationalValue) {
+  const difference = value - nationalValue;
+  const magnitude = Math.abs(difference).toFixed(1);
+
+  if (Math.abs(difference) < 0.05) {
+    return 'Similar to the national average.';
+  }
+
+  return difference < 0
+    ? `${magnitude} points more negative than the national average.`
+    : `${magnitude} points more positive than the national average.`;
 }
 
 function buildContextLine(props) {
